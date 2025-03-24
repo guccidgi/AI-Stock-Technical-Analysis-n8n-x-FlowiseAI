@@ -84,26 +84,12 @@ For the Fetch_Option_Data Tool that fetches option data, you have several deploy
 ### n8n Templates Import
 Import all 7 n8n templates and configure them as follows:
 
-1. **[n8n-Personal AI Assistant with Telegram]**
-   - Create Airtable connection and re-map the Airtable base/table, even if the names are the same
-
-2. **[n8n-Flowise Earnings]**
+1. **[n8n-Flowise Earnings]**
    - Modify the Node: Flowise_Assistant / Open_Analysis with your Flowise API url
    - If Flowise has authentication enabled, create a corresponding API key or select "none" for testing
 
-3. **[n8n-Stock Technical Analysis]**
+2. **[n8n-Stock Technical Analysis]**
    - For Tradingview Daily/Weekly, create Header Auth with Name: x-api-key and value as your API_Key
    - Update Telegram chat_id to your own
    - Update the Deep Research long article url to match your Deep Research AI Agent-webhook's webhook url
 
-4. **[n8n-News Agent Perplexity]**
-   - Modify the recipient email address
-
-5. **[n8n-FMP API]**
-   - Update with your FMP API Key
-
-6. **[Deep Research AI Agent-webhook]**
-   - No specific changes needed, but make sure to update the webhook url in [n8n-Stock Technical Analysis]'s Deep Research section
-
-7. **[n8n-Schedule Watch Ticker]**
-   - No specific configuration needed
