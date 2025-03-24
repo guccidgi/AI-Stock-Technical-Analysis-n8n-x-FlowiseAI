@@ -1,0 +1,8 @@
+{
+  "name": "Get_technical_analysis",
+  "description": "use this tool to get techninal analysis result",
+  "color": "linear-gradient(rgb(202,253,79), rgb(156,149,146))",
+  "iconSrc": "",
+  "schema": "[{\"id\":0,\"property\":\"ticker\",\"description\":\"Stock ticker\",\"type\":\"string\",\"required\":false}]",
+  "func": "const fetch = require('node-fetch');\nconst url = 'your n8n webhook url' ;\nconst options = {\n    method: 'POST',\n    headers: {\n        'Content-Type': 'application/json'\n    },\n   body: JSON.stringify({\n      \"ticker\": $ticker,\n    })\n};\ntry {\n    const response = await fetch(url, options);\n    const data = await response.text();\n    return data;\n} catch (error) {\n    console.error(error);\n    return '';\n}"
+}

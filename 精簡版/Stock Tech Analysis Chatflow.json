@@ -1,0 +1,691 @@
+{
+  "nodes": [
+    {
+      "id": "chatOpenAI_0",
+      "position": {
+        "x": 89.36111731562664,
+        "y": -108.25312135948698
+      },
+      "type": "customNode",
+      "data": {
+        "id": "chatOpenAI_0",
+        "label": "ChatOpenAI",
+        "version": 8.1,
+        "name": "chatOpenAI",
+        "type": "ChatOpenAI",
+        "baseClasses": [
+          "ChatOpenAI",
+          "BaseChatModel",
+          "BaseLanguageModel",
+          "Runnable"
+        ],
+        "category": "Chat Models",
+        "description": "Wrapper around OpenAI large language models that use the Chat endpoint",
+        "inputParams": [
+          {
+            "label": "Connect Credential",
+            "name": "credential",
+            "type": "credential",
+            "credentialNames": [
+              "openAIApi"
+            ],
+            "id": "chatOpenAI_0-input-credential-credential"
+          },
+          {
+            "label": "Model Name",
+            "name": "modelName",
+            "type": "asyncOptions",
+            "loadMethod": "listModels",
+            "default": "gpt-4o-mini",
+            "id": "chatOpenAI_0-input-modelName-asyncOptions"
+          },
+          {
+            "label": "Temperature",
+            "name": "temperature",
+            "type": "number",
+            "step": 0.1,
+            "default": 0.9,
+            "optional": true,
+            "id": "chatOpenAI_0-input-temperature-number"
+          },
+          {
+            "label": "Streaming",
+            "name": "streaming",
+            "type": "boolean",
+            "default": true,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-streaming-boolean"
+          },
+          {
+            "label": "Max Tokens",
+            "name": "maxTokens",
+            "type": "number",
+            "step": 1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-maxTokens-number"
+          },
+          {
+            "label": "Top Probability",
+            "name": "topP",
+            "type": "number",
+            "step": 0.1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-topP-number"
+          },
+          {
+            "label": "Frequency Penalty",
+            "name": "frequencyPenalty",
+            "type": "number",
+            "step": 0.1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-frequencyPenalty-number"
+          },
+          {
+            "label": "Presence Penalty",
+            "name": "presencePenalty",
+            "type": "number",
+            "step": 0.1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-presencePenalty-number"
+          },
+          {
+            "label": "Timeout",
+            "name": "timeout",
+            "type": "number",
+            "step": 1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-timeout-number"
+          },
+          {
+            "label": "Strict Tool Calling",
+            "name": "strictToolCalling",
+            "type": "boolean",
+            "description": "Whether the model supports the `strict` argument when passing in tools. If not specified, the `strict` argument will not be passed to OpenAI.",
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-strictToolCalling-boolean"
+          },
+          {
+            "label": "Stop Sequence",
+            "name": "stopSequence",
+            "type": "string",
+            "rows": 4,
+            "optional": true,
+            "description": "List of stop words to use when generating. Use comma to separate multiple stop words.",
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-stopSequence-string"
+          },
+          {
+            "label": "BasePath",
+            "name": "basepath",
+            "type": "string",
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-basepath-string"
+          },
+          {
+            "label": "Proxy Url",
+            "name": "proxyUrl",
+            "type": "string",
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-proxyUrl-string"
+          },
+          {
+            "label": "BaseOptions",
+            "name": "baseOptions",
+            "type": "json",
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-baseOptions-json"
+          },
+          {
+            "label": "Allow Image Uploads",
+            "name": "allowImageUploads",
+            "type": "boolean",
+            "description": "Allow image input. Refer to the <a href=\"https://docs.flowiseai.com/using-flowise/uploads#image\" target=\"_blank\">docs</a> for more details.",
+            "default": false,
+            "optional": true,
+            "id": "chatOpenAI_0-input-allowImageUploads-boolean"
+          },
+          {
+            "label": "Image Resolution",
+            "description": "This parameter controls the resolution in which the model views the image.",
+            "name": "imageResolution",
+            "type": "options",
+            "options": [
+              {
+                "label": "Low",
+                "name": "low"
+              },
+              {
+                "label": "High",
+                "name": "high"
+              },
+              {
+                "label": "Auto",
+                "name": "auto"
+              }
+            ],
+            "default": "low",
+            "optional": false,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-imageResolution-options"
+          },
+          {
+            "label": "Reasoning Effort",
+            "description": "Constrains effort on reasoning for reasoning models. Only applicable for o1 models",
+            "name": "reasoningEffort",
+            "type": "options",
+            "options": [
+              {
+                "label": "Low",
+                "name": "low"
+              },
+              {
+                "label": "Medium",
+                "name": "medium"
+              },
+              {
+                "label": "High",
+                "name": "high"
+              }
+            ],
+            "default": "low",
+            "optional": false,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-reasoningEffort-options"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Cache",
+            "name": "cache",
+            "type": "BaseCache",
+            "optional": true,
+            "id": "chatOpenAI_0-input-cache-BaseCache"
+          }
+        ],
+        "inputs": {
+          "cache": "",
+          "modelName": "gpt-4o",
+          "temperature": "0.2",
+          "streaming": true,
+          "maxTokens": "",
+          "topP": "",
+          "frequencyPenalty": "",
+          "presencePenalty": "",
+          "timeout": "",
+          "strictToolCalling": "",
+          "stopSequence": "",
+          "basepath": "",
+          "proxyUrl": "",
+          "baseOptions": "",
+          "allowImageUploads": "",
+          "imageResolution": "low",
+          "reasoningEffort": "low"
+        },
+        "outputAnchors": [
+          {
+            "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "chatOpenAI",
+            "label": "ChatOpenAI",
+            "description": "Wrapper around OpenAI large language models that use the Chat endpoint",
+            "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 667,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 89.36111731562664,
+        "y": -108.25312135948698
+      },
+      "dragging": false
+    },
+    {
+      "id": "supervisor_0",
+      "position": {
+        "x": 546.3036938212462,
+        "y": 252.8806304476422
+      },
+      "type": "customNode",
+      "data": {
+        "id": "supervisor_0",
+        "label": "Supervisor",
+        "version": 3,
+        "name": "supervisor",
+        "type": "Supervisor",
+        "baseClasses": [
+          "Supervisor"
+        ],
+        "category": "Multi Agents",
+        "inputParams": [
+          {
+            "label": "Supervisor Name",
+            "name": "supervisorName",
+            "type": "string",
+            "placeholder": "Supervisor",
+            "default": "Supervisor",
+            "id": "supervisor_0-input-supervisorName-string"
+          },
+          {
+            "label": "Supervisor Prompt",
+            "name": "supervisorPrompt",
+            "type": "string",
+            "description": "Prompt must contains {team_members}",
+            "rows": 4,
+            "default": "You are a supervisor tasked with managing a conversation between the following workers: {team_members}.\nGiven the following user request, respond with the worker to act next.\nEach worker will perform a task and respond with their results and status.\nWhen finished, respond with FINISH.\nSelect strategically to minimize the number of steps taken.",
+            "additionalParams": true,
+            "id": "supervisor_0-input-supervisorPrompt-string"
+          },
+          {
+            "label": "Summarization",
+            "name": "summarization",
+            "type": "boolean",
+            "description": "Return final output as a summarization of the conversation",
+            "optional": true,
+            "additionalParams": true,
+            "id": "supervisor_0-input-summarization-boolean"
+          },
+          {
+            "label": "Recursion Limit",
+            "name": "recursionLimit",
+            "type": "number",
+            "description": "Maximum number of times a call can recurse. If not provided, defaults to 100.",
+            "default": 100,
+            "additionalParams": true,
+            "id": "supervisor_0-input-recursionLimit-number"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Tool Calling Chat Model",
+            "name": "model",
+            "type": "BaseChatModel",
+            "description": "Only compatible with models that are capable of function calling: ChatOpenAI, ChatMistral, ChatAnthropic, ChatGoogleGenerativeAI, GroqChat. Best result with GPT-4 model",
+            "id": "supervisor_0-input-model-BaseChatModel"
+          },
+          {
+            "label": "Agent Memory",
+            "name": "agentMemory",
+            "type": "BaseCheckpointSaver",
+            "description": "Save the state of the agent",
+            "optional": true,
+            "id": "supervisor_0-input-agentMemory-BaseCheckpointSaver"
+          },
+          {
+            "label": "Input Moderation",
+            "description": "Detect text that could generate harmful output and prevent it from being sent to the language model",
+            "name": "inputModeration",
+            "type": "Moderation",
+            "optional": true,
+            "list": true,
+            "id": "supervisor_0-input-inputModeration-Moderation"
+          }
+        ],
+        "inputs": {
+          "supervisorName": "Supervisor",
+          "supervisorPrompt": "你是一名資深且經驗豐富的主管，負責管理以下員工之間的對話：{team_members}。\n根據以下用戶請求，如果員工數大於1則繼續回應下一個要執行任務的員工。\n每位員工會執行一個任務並回報他們的結果與狀態。\n有些工作會因為呼叫API需要較長等待時間，因此不需除要員工執行任務，最長等待時間120秒。\n當完成時，回應 Finish。要策略性地選擇以盡量減少步驟數。\n--------\n## 執行順序\n1.Use n8n-Technical Analyst to get Stock Technical analysis report from API.\n",
+          "model": "{{chatOpenAI_0.data.instance}}",
+          "agentMemory": "",
+          "summarization": "",
+          "recursionLimit": 100,
+          "inputModeration": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "supervisor_0-output-supervisor-Supervisor",
+            "name": "supervisor",
+            "label": "Supervisor",
+            "description": "",
+            "type": "Supervisor"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 480,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 546.3036938212462,
+        "y": 252.8806304476422
+      },
+      "dragging": false
+    },
+    {
+      "id": "worker_0",
+      "position": {
+        "x": 998.2162408339507,
+        "y": 41.928868620840575
+      },
+      "type": "customNode",
+      "data": {
+        "id": "worker_0",
+        "label": "Worker",
+        "version": 2,
+        "name": "worker",
+        "type": "Worker",
+        "baseClasses": [
+          "Worker"
+        ],
+        "category": "Multi Agents",
+        "inputParams": [
+          {
+            "label": "Worker Name",
+            "name": "workerName",
+            "type": "string",
+            "placeholder": "Worker",
+            "id": "worker_0-input-workerName-string"
+          },
+          {
+            "label": "Worker Prompt",
+            "name": "workerPrompt",
+            "type": "string",
+            "rows": 4,
+            "default": "You are a research assistant who can search for up-to-date info using search engine.",
+            "id": "worker_0-input-workerPrompt-string"
+          },
+          {
+            "label": "Format Prompt Values",
+            "name": "promptValues",
+            "type": "json",
+            "optional": true,
+            "acceptVariable": true,
+            "list": true,
+            "id": "worker_0-input-promptValues-json"
+          },
+          {
+            "label": "Max Iterations",
+            "name": "maxIterations",
+            "type": "number",
+            "optional": true,
+            "id": "worker_0-input-maxIterations-number"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Tools",
+            "name": "tools",
+            "type": "Tool",
+            "list": true,
+            "optional": true,
+            "id": "worker_0-input-tools-Tool"
+          },
+          {
+            "label": "Supervisor",
+            "name": "supervisor",
+            "type": "Supervisor",
+            "id": "worker_0-input-supervisor-Supervisor"
+          },
+          {
+            "label": "Tool Calling Chat Model",
+            "name": "model",
+            "type": "BaseChatModel",
+            "optional": true,
+            "description": "Only compatible with models that are capable of function calling: ChatOpenAI, ChatMistral, ChatAnthropic, ChatGoogleGenerativeAI, ChatVertexAI, GroqChat. If not specified, supervisor's model will be used",
+            "id": "worker_0-input-model-BaseChatModel"
+          }
+        ],
+        "inputs": {
+          "workerName": "n8n Technical Analyst",
+          "workerPrompt": "You are a senior assistant.\n\n#Mission\nsend stock ticker to the tool named Get_technical_analysis to get stock technincal analysis result and display the return chart image.\n\n#其他要求\n使用通順的繁體中文回覆我",
+          "tools": [
+            "{{customTool_0.data.instance}}"
+          ],
+          "supervisor": "{{supervisor_0.data.instance}}",
+          "model": "",
+          "promptValues": "",
+          "maxIterations": ""
+        },
+        "outputAnchors": [],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 720,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 998.2162408339507,
+        "y": 41.928868620840575
+      },
+      "dragging": false
+    },
+    {
+      "id": "customTool_0",
+      "position": {
+        "x": 497.5972948524527,
+        "y": -203.45711201009678
+      },
+      "type": "customNode",
+      "data": {
+        "id": "customTool_0",
+        "label": "Custom Tool",
+        "version": 3,
+        "name": "customTool",
+        "type": "CustomTool",
+        "baseClasses": [
+          "CustomTool",
+          "Tool",
+          "StructuredTool",
+          "Runnable"
+        ],
+        "category": "Tools",
+        "description": "Use custom tool you've created in Flowise within chatflow",
+        "inputParams": [
+          {
+            "label": "Select Tool",
+            "name": "selectedTool",
+            "type": "asyncOptions",
+            "loadMethod": "listTools",
+            "id": "customTool_0-input-selectedTool-asyncOptions"
+          },
+          {
+            "label": "Return Direct",
+            "name": "returnDirect",
+            "description": "Return the output of the tool directly to the user",
+            "type": "boolean",
+            "optional": true,
+            "id": "customTool_0-input-returnDirect-boolean"
+          },
+          {
+            "label": "Custom Tool Name",
+            "name": "customToolName",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_0-input-customToolName-string"
+          },
+          {
+            "label": "Custom Tool Description",
+            "name": "customToolDesc",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_0-input-customToolDesc-string"
+          },
+          {
+            "label": "Custom Tool Schema",
+            "name": "customToolSchema",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_0-input-customToolSchema-string"
+          },
+          {
+            "label": "Custom Tool Func",
+            "name": "customToolFunc",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_0-input-customToolFunc-string"
+          }
+        ],
+        "inputAnchors": [],
+        "inputs": {
+          "selectedTool": "6558e5a2-e481-4c65-a437-4b7fbaae2f6b",
+          "returnDirect": "",
+          "customToolName": "",
+          "customToolDesc": "",
+          "customToolSchema": "",
+          "customToolFunc": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "customTool_0-output-customTool-CustomTool|Tool|StructuredTool|Runnable",
+            "name": "customTool",
+            "label": "CustomTool",
+            "description": "Use custom tool you've created in Flowise within chatflow",
+            "type": "CustomTool | Tool | StructuredTool | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 370,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 497.5972948524527,
+        "y": -203.45711201009678
+      },
+      "dragging": false
+    },
+    {
+      "id": "customFunction_0",
+      "position": {
+        "x": -250.2318795413112,
+        "y": -157.55481399806482
+      },
+      "type": "customNode",
+      "data": {
+        "id": "customFunction_0",
+        "label": "Custom JS Function",
+        "version": 3,
+        "name": "customFunction",
+        "type": "CustomFunction",
+        "baseClasses": [
+          "CustomFunction",
+          "Utilities"
+        ],
+        "tags": [
+          "Utilities"
+        ],
+        "category": "Utilities",
+        "description": "Execute custom javascript function",
+        "inputParams": [
+          {
+            "label": "Input Variables",
+            "name": "functionInputVariables",
+            "description": "Input variables can be used in the function with prefix $. For example: $var",
+            "type": "json",
+            "optional": true,
+            "acceptVariable": true,
+            "list": true,
+            "id": "customFunction_0-input-functionInputVariables-json"
+          },
+          {
+            "label": "Function Name",
+            "name": "functionName",
+            "type": "string",
+            "optional": true,
+            "placeholder": "My Function",
+            "id": "customFunction_0-input-functionName-string"
+          },
+          {
+            "label": "Javascript Function",
+            "name": "javascriptFunction",
+            "type": "code",
+            "id": "customFunction_0-input-javascriptFunction-code"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Additional Tools",
+            "description": "Tools can be used in the function with $tools.{tool_name}.invoke(args)",
+            "name": "tools",
+            "type": "Tool",
+            "list": true,
+            "optional": true,
+            "id": "customFunction_0-input-tools-Tool"
+          }
+        ],
+        "inputs": {
+          "functionInputVariables": "{\"tocker\":\"{{question}}\"}",
+          "functionName": "",
+          "tools": "",
+          "javascriptFunction": "const fetch = require('node-fetch');\nconst url = 'https://your n8n webhook url';\nconst options = {\n    method: 'POST',\n    headers: {\n        'Content-Type': 'application/json'\n    },\n    body: JSON.stringify({\n      \"ticker\": 'NVDA;'\n    })\n};\ntry {\n    const response = await fetch(url, options);\n    const text = await response.text(); \n    return text;\n} catch (error) {\n    console.error(error);\n    return '';\n}"
+        },
+        "outputAnchors": [
+          {
+            "name": "output",
+            "label": "Output",
+            "type": "options",
+            "description": "",
+            "options": [
+              {
+                "id": "customFunction_0-output-output-string|number|boolean|json|array",
+                "name": "output",
+                "label": "Output",
+                "description": "",
+                "type": "string | number | boolean | json | array"
+              },
+              {
+                "id": "customFunction_0-output-EndingNode-CustomFunction",
+                "name": "EndingNode",
+                "label": "Ending Node",
+                "description": "",
+                "type": "CustomFunction"
+              }
+            ],
+            "default": "output"
+          }
+        ],
+        "outputs": {
+          "output": "output"
+        },
+        "selected": false
+      },
+      "width": 300,
+      "height": 723,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -250.2318795413112,
+        "y": -157.55481399806482
+      },
+      "dragging": false
+    }
+  ],
+  "edges": [
+    {
+      "source": "chatOpenAI_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "target": "supervisor_0",
+      "targetHandle": "supervisor_0-input-model-BaseChatModel",
+      "type": "buttonedge",
+      "id": "chatOpenAI_0-chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable-supervisor_0-supervisor_0-input-model-BaseChatModel"
+    },
+    {
+      "source": "supervisor_0",
+      "sourceHandle": "supervisor_0-output-supervisor-Supervisor",
+      "target": "worker_0",
+      "targetHandle": "worker_0-input-supervisor-Supervisor",
+      "type": "buttonedge",
+      "id": "supervisor_0-supervisor_0-output-supervisor-Supervisor-worker_0-worker_0-input-supervisor-Supervisor"
+    },
+    {
+      "source": "customTool_0",
+      "sourceHandle": "customTool_0-output-customTool-CustomTool|Tool|StructuredTool|Runnable",
+      "target": "worker_0",
+      "targetHandle": "worker_0-input-tools-Tool",
+      "type": "buttonedge",
+      "id": "customTool_0-customTool_0-output-customTool-CustomTool|Tool|StructuredTool|Runnable-worker_0-worker_0-input-tools-Tool"
+    }
+  ]
+}
