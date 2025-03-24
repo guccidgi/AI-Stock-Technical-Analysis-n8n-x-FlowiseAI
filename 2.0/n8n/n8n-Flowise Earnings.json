@@ -1,0 +1,307 @@
+{
+  "name": "Flowise-Earnings",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "= {{ $json.query }}\n\n",
+        "options": {
+          "systemMessage": "=你是一名擅長使用工具來整理資料的資深助理。\n\nToday's date is {{ new Date(new Date().setDate(new Date().getDate() - 0)).toISOString().split('T')[0] }}.\n\nGuidelines:\n- 當用戶沒有提及特定日其實，則假設要求詢問的是今天。\n\n- 當問到特定財務數據、指標時，例如最新 EPS、Operating Cash Flow，先分析出以下欄位：\n* symbol：找出要分析的公司的股票代號，例如 Nvidia 為 NDVA , Apple 為 AAPL，接著再使用 Financial_Metrics 來搜尋該股票代號的財務數據數據。\n\n- 當問到公司基本面、財報..等相關問題時，例如 Nvidia 2025 Q3 財報分析或未來展望時，使用 Flowise_Assistant 來搜尋該股票代號的財報與未來展望資訊。\n\n- 當問到技術分析時，使用 Flowise_Assistant 來搜尋該股票代號的分析資訊。\n\n- 當問到選擇權分析、選擇權策略時，使用 Option_Analysis 來搜尋該股票的選擇權策略資訊。\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        220,
+        0
+      ],
+      "id": "5e31b2c3-8605-401b-8379-5a236a7e3305",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=perplexity-earning-{{ $json.query }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        280,
+        200
+      ],
+      "id": "ceeb61c4-83bd-4381-8d33-3118baf8cc99",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cf5ff659-304e-448e-aab9-ff75817cf192",
+              "name": "response",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        580,
+        0
+      ],
+      "id": "f461830d-d552-48e4-8588-a5b47f0a6a5e",
+      "name": "Set return value"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Use this tool to get advise of stock option strategy.",
+        "method": "POST",
+        "url": "change to your Flowise assistant API url",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "parametersHeaders": {
+          "values": [
+            {
+              "name": "Content-Type",
+              "valueProvider": "fieldValue",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "parametersBody": {
+          "values": [
+            {
+              "name": "question",
+              "valueProvider": "fieldValue",
+              "value": "={{ $json.query }}\n"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        600,
+        200
+      ],
+      "id": "f2be77aa-394f-40c0-bf3c-956db19f0622",
+      "name": "Option_Analysis",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ZGXiFoDyeSJiYhkO",
+          "name": "Header Auth-Flowise"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "Financial_Metrics",
+        "workflowId": {
+          "__rl": true,
+          "value": "nh8PLSbL1yTJkpLJ",
+          "mode": "list",
+          "cachedResultName": "FMP API"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "symbol",
+              "stringValue": "={{ $fromAI(\"query\",\"Stock ticker\") }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        740,
+        200
+      ],
+      "id": "37a96550-a9b5-45ca-9a8a-5e5b756a3c84",
+      "name": "Financial_Metrics"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "query"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        40,
+        0
+      ],
+      "id": "748e8ebf-618b-44b6-a16b-f303cd5148d6",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-3-7-sonnet-20250219",
+          "mode": "list",
+          "cachedResultName": "Claude 3.7 Sonnet"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        140,
+        200
+      ],
+      "id": "6cb6a48f-53de-4f87-82cb-b38b1f5a93bc",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "bbfyEJjqPPl7ZxFd",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Use this tool to get stock earnings report or technical analysis result.",
+        "method": "POST",
+        "url": "change to your Flowise assistant API url",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "parametersHeaders": {
+          "values": [
+            {
+              "name": "Content-Type",
+              "valueProvider": "fieldValue",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "parametersBody": {
+          "values": [
+            {
+              "name": "question",
+              "valueProvider": "fieldValue",
+              "value": "={{ $json.query }}\n"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        200
+      ],
+      "id": "48b2249b-5480-4e8b-9825-9a9c0a271ab8",
+      "name": "Flowise_Assistant",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ZGXiFoDyeSJiYhkO",
+          "name": "Header Auth-Flowise"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Set return value",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Option_Analysis": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Financial_Metrics": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flowise_Assistant": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b0e6b85f-cb89-446c-baa7-6d8500c4f033",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f1ebecbf08b94e56cb5800d7576e7d23fd19de8f753a7d14f117872b859ca2d0"
+  },
+  "id": "tWb5RcM2C5VUMqH2",
+  "tags": []
+}

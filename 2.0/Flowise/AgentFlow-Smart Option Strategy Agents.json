@@ -1,0 +1,1094 @@
+{
+  "nodes": [
+    {
+      "id": "supervisor_0",
+      "position": {
+        "x": 588.3068707488688,
+        "y": 184.40879226172376
+      },
+      "type": "customNode",
+      "data": {
+        "id": "supervisor_0",
+        "label": "Supervisor",
+        "version": 3,
+        "name": "supervisor",
+        "type": "Supervisor",
+        "baseClasses": [
+          "Supervisor"
+        ],
+        "category": "Multi Agents",
+        "inputParams": [
+          {
+            "label": "Supervisor Name",
+            "name": "supervisorName",
+            "type": "string",
+            "placeholder": "Supervisor",
+            "default": "Supervisor",
+            "id": "supervisor_0-input-supervisorName-string"
+          },
+          {
+            "label": "Supervisor Prompt",
+            "name": "supervisorPrompt",
+            "type": "string",
+            "description": "Prompt must contains {team_members}",
+            "rows": 4,
+            "default": "You are a supervisor tasked with managing a conversation between the following workers: {team_members}.\nGiven the following user request, respond with the worker to act next.\nEach worker will perform a task and respond with their results and status.\nWhen finished, respond with FINISH.\nSelect strategically to minimize the number of steps taken.",
+            "additionalParams": true,
+            "id": "supervisor_0-input-supervisorPrompt-string"
+          },
+          {
+            "label": "Summarization",
+            "name": "summarization",
+            "type": "boolean",
+            "description": "Return final output as a summarization of the conversation",
+            "optional": true,
+            "additionalParams": true,
+            "id": "supervisor_0-input-summarization-boolean"
+          },
+          {
+            "label": "Recursion Limit",
+            "name": "recursionLimit",
+            "type": "number",
+            "description": "Maximum number of times a call can recurse. If not provided, defaults to 100.",
+            "default": 100,
+            "additionalParams": true,
+            "id": "supervisor_0-input-recursionLimit-number"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Tool Calling Chat Model",
+            "name": "model",
+            "type": "BaseChatModel",
+            "description": "Only compatible with models that are capable of function calling: ChatOpenAI, ChatMistral, ChatAnthropic, ChatGoogleGenerativeAI, GroqChat. Best result with GPT-4 model",
+            "id": "supervisor_0-input-model-BaseChatModel"
+          },
+          {
+            "label": "Agent Memory",
+            "name": "agentMemory",
+            "type": "BaseCheckpointSaver",
+            "description": "Save the state of the agent",
+            "optional": true,
+            "id": "supervisor_0-input-agentMemory-BaseCheckpointSaver"
+          },
+          {
+            "label": "Input Moderation",
+            "description": "Detect text that could generate harmful output and prevent it from being sent to the language model",
+            "name": "inputModeration",
+            "type": "Moderation",
+            "optional": true,
+            "list": true,
+            "id": "supervisor_0-input-inputModeration-Moderation"
+          }
+        ],
+        "inputs": {
+          "supervisorName": "Supervisor",
+          "supervisorPrompt": "你是一名資深且經驗豐富的主管，負責管理以下員工之間的對話：{team_members}。\n根據以下用戶請求，回應下一個要執行任務的員工。每位員工會執行一個任務並回報他們的結果與狀態。\n當完成時，回應 Finish。要策略性地選擇以盡量減少步驟數。\n--------\n## 執行順序\n首先由 Option Data Analyst 分析資料。\n然後，讓 Strategy Developer 優先擬定勝率高＆風險報酬比高的策略。\n如有需要可用 get_option_knowledge 查詢知識。\n最後將所有員工的研究結果，交給 Report Writer，撰寫最終彙整報告，然後使用 send_mail 發送報告。\n",
+          "model": "{{chatOpenAI_0.data.instance}}",
+          "agentMemory": "",
+          "summarization": "",
+          "recursionLimit": "150",
+          "inputModeration": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "supervisor_0-output-supervisor-Supervisor",
+            "name": "supervisor",
+            "label": "Supervisor",
+            "description": "",
+            "type": "Supervisor"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 483,
+      "positionAbsolute": {
+        "x": 588.3068707488688,
+        "y": 184.40879226172376
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "worker_0",
+      "position": {
+        "x": 1026.570759598987,
+        "y": 427.47278840167587
+      },
+      "type": "customNode",
+      "data": {
+        "id": "worker_0",
+        "label": "Worker",
+        "version": 2,
+        "name": "worker",
+        "type": "Worker",
+        "baseClasses": [
+          "Worker"
+        ],
+        "category": "Multi Agents",
+        "inputParams": [
+          {
+            "label": "Worker Name",
+            "name": "workerName",
+            "type": "string",
+            "placeholder": "Worker",
+            "id": "worker_0-input-workerName-string"
+          },
+          {
+            "label": "Worker Prompt",
+            "name": "workerPrompt",
+            "type": "string",
+            "rows": 4,
+            "default": "You are a research assistant who can search for up-to-date info using search engine.",
+            "id": "worker_0-input-workerPrompt-string"
+          },
+          {
+            "label": "Format Prompt Values",
+            "name": "promptValues",
+            "type": "json",
+            "optional": true,
+            "acceptVariable": true,
+            "list": true,
+            "id": "worker_0-input-promptValues-json"
+          },
+          {
+            "label": "Max Iterations",
+            "name": "maxIterations",
+            "type": "number",
+            "optional": true,
+            "id": "worker_0-input-maxIterations-number"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Tools",
+            "name": "tools",
+            "type": "Tool",
+            "list": true,
+            "optional": true,
+            "id": "worker_0-input-tools-Tool"
+          },
+          {
+            "label": "Supervisor",
+            "name": "supervisor",
+            "type": "Supervisor",
+            "id": "worker_0-input-supervisor-Supervisor"
+          },
+          {
+            "label": "Tool Calling Chat Model",
+            "name": "model",
+            "type": "BaseChatModel",
+            "optional": true,
+            "description": "Only compatible with models that are capable of function calling: ChatOpenAI, ChatMistral, ChatAnthropic, ChatGoogleGenerativeAI, ChatVertexAI, GroqChat. If not specified, supervisor's model will be used",
+            "id": "worker_0-input-model-BaseChatModel"
+          }
+        ],
+        "inputs": {
+          "workerName": "Option Data Analyst",
+          "workerPrompt": "As a critical member of the financial analysis team, your primary task is to analyze stock option data with precision and depth. Utilizing advanced analytical tools, your role is to examine option chains to identify patterns, trends, and anomalies that can guide strategic decision-making. Your insights are vital for interpreting market sentiment and predicting potential price movements.\n\nObjectives:\n\nConduct a thorough analysis of the option chains for a specified stock (stock_symbol), focusing on key metrics such as implied volatility, open interest, and trading volume.\nUtilize both historical data and current market conditions to pinpoint potential opportunities and risks.\nGenerate a detailed report that highlights significant findings, including potential market movements and risk factors.\nEmphasize strategic areas where adjustments could mitigate risk and enhance returns.\nDeliver insights to the Strategy Developer for further action.\nGuidelines:\n\nBase your analysis strictly on verified data; avoid assumptions.\nEnsure your report is comprehensive, clear, and actionable.\n\nUse tool:\n\nuse this tool : fetch Options Chain to get Options data\n\nThe stock tricker to analyze is {ticker}",
+          "tools": [
+            "{{customTool_0.data.instance}}"
+          ],
+          "supervisor": "{{supervisor_0.data.instance}}",
+          "model": "",
+          "promptValues": "{\"ticker\":\"{{question}}\"}",
+          "maxIterations": ""
+        },
+        "outputAnchors": [],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 723,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 1026.570759598987,
+        "y": 427.47278840167587
+      }
+    },
+    {
+      "id": "chatOpenAI_0",
+      "position": {
+        "x": 157.6629072597595,
+        "y": 188.8604063895038
+      },
+      "type": "customNode",
+      "data": {
+        "id": "chatOpenAI_0",
+        "label": "ChatOpenAI",
+        "version": 8.1,
+        "name": "chatOpenAI",
+        "type": "ChatOpenAI",
+        "baseClasses": [
+          "ChatOpenAI",
+          "BaseChatModel",
+          "BaseLanguageModel",
+          "Runnable"
+        ],
+        "category": "Chat Models",
+        "description": "Wrapper around OpenAI large language models that use the Chat endpoint",
+        "inputParams": [
+          {
+            "label": "Connect Credential",
+            "name": "credential",
+            "type": "credential",
+            "credentialNames": [
+              "openAIApi"
+            ],
+            "id": "chatOpenAI_0-input-credential-credential"
+          },
+          {
+            "label": "Model Name",
+            "name": "modelName",
+            "type": "asyncOptions",
+            "loadMethod": "listModels",
+            "default": "gpt-4o-mini",
+            "id": "chatOpenAI_0-input-modelName-asyncOptions"
+          },
+          {
+            "label": "Temperature",
+            "name": "temperature",
+            "type": "number",
+            "step": 0.1,
+            "default": 0.9,
+            "optional": true,
+            "id": "chatOpenAI_0-input-temperature-number"
+          },
+          {
+            "label": "Streaming",
+            "name": "streaming",
+            "type": "boolean",
+            "default": true,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-streaming-boolean"
+          },
+          {
+            "label": "Max Tokens",
+            "name": "maxTokens",
+            "type": "number",
+            "step": 1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-maxTokens-number"
+          },
+          {
+            "label": "Top Probability",
+            "name": "topP",
+            "type": "number",
+            "step": 0.1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-topP-number"
+          },
+          {
+            "label": "Frequency Penalty",
+            "name": "frequencyPenalty",
+            "type": "number",
+            "step": 0.1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-frequencyPenalty-number"
+          },
+          {
+            "label": "Presence Penalty",
+            "name": "presencePenalty",
+            "type": "number",
+            "step": 0.1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-presencePenalty-number"
+          },
+          {
+            "label": "Timeout",
+            "name": "timeout",
+            "type": "number",
+            "step": 1,
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-timeout-number"
+          },
+          {
+            "label": "Strict Tool Calling",
+            "name": "strictToolCalling",
+            "type": "boolean",
+            "description": "Whether the model supports the `strict` argument when passing in tools. If not specified, the `strict` argument will not be passed to OpenAI.",
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-strictToolCalling-boolean"
+          },
+          {
+            "label": "Stop Sequence",
+            "name": "stopSequence",
+            "type": "string",
+            "rows": 4,
+            "optional": true,
+            "description": "List of stop words to use when generating. Use comma to separate multiple stop words.",
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-stopSequence-string"
+          },
+          {
+            "label": "BasePath",
+            "name": "basepath",
+            "type": "string",
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-basepath-string"
+          },
+          {
+            "label": "Proxy Url",
+            "name": "proxyUrl",
+            "type": "string",
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-proxyUrl-string"
+          },
+          {
+            "label": "BaseOptions",
+            "name": "baseOptions",
+            "type": "json",
+            "optional": true,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-baseOptions-json"
+          },
+          {
+            "label": "Allow Image Uploads",
+            "name": "allowImageUploads",
+            "type": "boolean",
+            "description": "Allow image input. Refer to the <a href=\"https://docs.flowiseai.com/using-flowise/uploads#image\" target=\"_blank\">docs</a> for more details.",
+            "default": false,
+            "optional": true,
+            "id": "chatOpenAI_0-input-allowImageUploads-boolean"
+          },
+          {
+            "label": "Image Resolution",
+            "description": "This parameter controls the resolution in which the model views the image.",
+            "name": "imageResolution",
+            "type": "options",
+            "options": [
+              {
+                "label": "Low",
+                "name": "low"
+              },
+              {
+                "label": "High",
+                "name": "high"
+              },
+              {
+                "label": "Auto",
+                "name": "auto"
+              }
+            ],
+            "default": "low",
+            "optional": false,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-imageResolution-options"
+          },
+          {
+            "label": "Reasoning Effort",
+            "description": "Constrains effort on reasoning for reasoning models. Only applicable for o1 and o3 models.",
+            "name": "reasoningEffort",
+            "type": "options",
+            "options": [
+              {
+                "label": "Low",
+                "name": "low"
+              },
+              {
+                "label": "Medium",
+                "name": "medium"
+              },
+              {
+                "label": "High",
+                "name": "high"
+              }
+            ],
+            "default": "medium",
+            "optional": false,
+            "additionalParams": true,
+            "id": "chatOpenAI_0-input-reasoningEffort-options"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Cache",
+            "name": "cache",
+            "type": "BaseCache",
+            "optional": true,
+            "id": "chatOpenAI_0-input-cache-BaseCache"
+          }
+        ],
+        "inputs": {
+          "cache": "",
+          "modelName": "gpt-4o",
+          "temperature": "0.3",
+          "streaming": true,
+          "maxTokens": "",
+          "topP": "",
+          "frequencyPenalty": "",
+          "presencePenalty": "",
+          "timeout": "",
+          "strictToolCalling": "",
+          "stopSequence": "",
+          "basepath": "",
+          "proxyUrl": "",
+          "baseOptions": "",
+          "allowImageUploads": "",
+          "imageResolution": "low",
+          "reasoningEffort": "medium"
+        },
+        "outputAnchors": [
+          {
+            "id": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+            "name": "chatOpenAI",
+            "label": "ChatOpenAI",
+            "description": "Wrapper around OpenAI large language models that use the Chat endpoint",
+            "type": "ChatOpenAI | BaseChatModel | BaseLanguageModel | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 670,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 157.6629072597595,
+        "y": 188.8604063895038
+      }
+    },
+    {
+      "id": "worker_1",
+      "position": {
+        "x": 1425.296508469769,
+        "y": 394.53814106549953
+      },
+      "type": "customNode",
+      "data": {
+        "id": "worker_1",
+        "label": "Worker",
+        "version": 2,
+        "name": "worker",
+        "type": "Worker",
+        "baseClasses": [
+          "Worker"
+        ],
+        "category": "Multi Agents",
+        "inputParams": [
+          {
+            "label": "Worker Name",
+            "name": "workerName",
+            "type": "string",
+            "placeholder": "Worker",
+            "id": "worker_1-input-workerName-string"
+          },
+          {
+            "label": "Worker Prompt",
+            "name": "workerPrompt",
+            "type": "string",
+            "rows": 4,
+            "default": "You are a research assistant who can search for up-to-date info using search engine.",
+            "id": "worker_1-input-workerPrompt-string"
+          },
+          {
+            "label": "Format Prompt Values",
+            "name": "promptValues",
+            "type": "json",
+            "optional": true,
+            "acceptVariable": true,
+            "list": true,
+            "id": "worker_1-input-promptValues-json"
+          },
+          {
+            "label": "Max Iterations",
+            "name": "maxIterations",
+            "type": "number",
+            "optional": true,
+            "id": "worker_1-input-maxIterations-number"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Tools",
+            "name": "tools",
+            "type": "Tool",
+            "list": true,
+            "optional": true,
+            "id": "worker_1-input-tools-Tool"
+          },
+          {
+            "label": "Supervisor",
+            "name": "supervisor",
+            "type": "Supervisor",
+            "id": "worker_1-input-supervisor-Supervisor"
+          },
+          {
+            "label": "Tool Calling Chat Model",
+            "name": "model",
+            "type": "BaseChatModel",
+            "optional": true,
+            "description": "Only compatible with models that are capable of function calling: ChatOpenAI, ChatMistral, ChatAnthropic, ChatGoogleGenerativeAI, ChatVertexAI, GroqChat. If not specified, supervisor's model will be used",
+            "id": "worker_1-input-model-BaseChatModel"
+          }
+        ],
+        "inputs": {
+          "workerName": "Strategy Developer",
+          "workerPrompt": "As an integral part of the financial strate gy team, your role is to convert analytical insights into practical strategies that effectively balance risk and reward, aligning with the company's financial objectives. Your expertise is crucial in navigating the complexities of the options market and ensuring strategic alignment with broader investment goals.\n\nObjectives:\n\nDevelop a risk management strategy informed by the insights from the option data analysis report on a specified stock (stock_symbol).\nCreate a balanced approach that considers both potential gains and risk mitigation.\nEnsure the strategy is flexible and adaptable to evolving market conditions.\nAlign the strategy with the company's overall investment objectives and risk management framework.\nGuidelines:\n\nUse only verified information; avoid assumptions.\nProduce a comprehensive strategy document that outlines recommended actions, potential scenarios, and contingency plans.\nEnsure the strategy is clear, actionable, and ready for presentation to the investment team.\nAnnotations and Explanations of Changes:\n\nClarity and Specificity: The revised prompts specify the tasks and objectives more clearly, ensuring that each agent understands their role and responsibilities. This helps in avoiding ambiguity and ensures that the agents can perform their tasks effectively.\n\nStructure and Language: The language has been refined for precision and professionalism, which is crucial in financial contexts. The structure now clearly separates objectives and guidelines, making it easier for the agents to follow.\n\nActionable Instructions: The instructions are now more actionable, with a focus on delivering concrete outputs (e.g., detailed reports and strategy documents) that are ready for further use by the team.\n\nAvoiding Assumptions: Both prompts emphasize the importance of using verified data and avoiding assumptions, which is critical in financial analysis to maintain accuracy and reliability.\n\nAlignment with Goals: The prompts ensure that the agents' outputs are aligned with the company's broader financial goals and risk management framework, enhancing the strategic coherence of the team's efforts.\n\n當你需要選擇權交易的知識、技巧，以及 mechanism / strategy 的時候，\n例如：\n- 作為賣方在收乾權利金(premium)50％時出場，長期下來勝率、獲利最好。\n- 作為賣方在合約剩餘到期日21天前轉倉，長期下來勝略最高。\n- Iron Condor 長期數據，最佳表現的價差大約是股價的10％。\n\n使用這個工具(get_option_knowledge)來向 vector store 取得 Option 相關的知識。\n\nThe stock tricker to analyze is {ticker}",
+          "tools": [
+            "{{customTool_0.data.instance}}",
+            "{{retrieverTool_0.data.instance}}"
+          ],
+          "supervisor": "{{supervisor_0.data.instance}}",
+          "model": "",
+          "promptValues": "{\"ticker\":\"{{question}}\"}",
+          "maxIterations": ""
+        },
+        "outputAnchors": [],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 723,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 1425.296508469769,
+        "y": 394.53814106549953
+      }
+    },
+    {
+      "id": "customTool_0",
+      "position": {
+        "x": 1029.2062268029947,
+        "y": 11.74509218262395
+      },
+      "type": "customNode",
+      "data": {
+        "id": "customTool_0",
+        "label": "Custom Tool",
+        "version": 3,
+        "name": "customTool",
+        "type": "CustomTool",
+        "baseClasses": [
+          "CustomTool",
+          "Tool",
+          "StructuredTool",
+          "Runnable"
+        ],
+        "category": "Tools",
+        "description": "Use custom tool you've created in Flowise within chatflow",
+        "inputParams": [
+          {
+            "label": "Select Tool",
+            "name": "selectedTool",
+            "type": "asyncOptions",
+            "loadMethod": "listTools",
+            "id": "customTool_0-input-selectedTool-asyncOptions"
+          },
+          {
+            "label": "Return Direct",
+            "name": "returnDirect",
+            "description": "Return the output of the tool directly to the user",
+            "type": "boolean",
+            "optional": true,
+            "id": "customTool_0-input-returnDirect-boolean"
+          },
+          {
+            "label": "Custom Tool Name",
+            "name": "customToolName",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_0-input-customToolName-string"
+          },
+          {
+            "label": "Custom Tool Description",
+            "name": "customToolDesc",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_0-input-customToolDesc-string"
+          },
+          {
+            "label": "Custom Tool Schema",
+            "name": "customToolSchema",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_0-input-customToolSchema-string"
+          },
+          {
+            "label": "Custom Tool Func",
+            "name": "customToolFunc",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_0-input-customToolFunc-string"
+          }
+        ],
+        "inputAnchors": [],
+        "inputs": {
+          "selectedTool": "fa049dd6-fe04-4c70-aa99-ce67cc0c4ee1",
+          "returnDirect": false,
+          "customToolName": "",
+          "customToolDesc": "",
+          "customToolSchema": "",
+          "customToolFunc": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "customTool_0-output-customTool-CustomTool|Tool|StructuredTool|Runnable",
+            "name": "customTool",
+            "label": "CustomTool",
+            "description": "Use custom tool you've created in Flowise within chatflow",
+            "type": "CustomTool | Tool | StructuredTool | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 373,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1029.2062268029947,
+        "y": 11.74509218262395
+      },
+      "dragging": false
+    },
+    {
+      "id": "worker_2",
+      "position": {
+        "x": 1824.9488992154488,
+        "y": 391.21366496542385
+      },
+      "type": "customNode",
+      "data": {
+        "id": "worker_2",
+        "label": "Worker",
+        "version": 2,
+        "name": "worker",
+        "type": "Worker",
+        "baseClasses": [
+          "Worker"
+        ],
+        "category": "Multi Agents",
+        "inputParams": [
+          {
+            "label": "Worker Name",
+            "name": "workerName",
+            "type": "string",
+            "placeholder": "Worker",
+            "id": "worker_2-input-workerName-string"
+          },
+          {
+            "label": "Worker Prompt",
+            "name": "workerPrompt",
+            "type": "string",
+            "rows": 4,
+            "default": "You are a research assistant who can search for up-to-date info using search engine.",
+            "id": "worker_2-input-workerPrompt-string"
+          },
+          {
+            "label": "Format Prompt Values",
+            "name": "promptValues",
+            "type": "json",
+            "optional": true,
+            "acceptVariable": true,
+            "list": true,
+            "id": "worker_2-input-promptValues-json"
+          },
+          {
+            "label": "Max Iterations",
+            "name": "maxIterations",
+            "type": "number",
+            "optional": true,
+            "id": "worker_2-input-maxIterations-number"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Tools",
+            "name": "tools",
+            "type": "Tool",
+            "list": true,
+            "optional": true,
+            "id": "worker_2-input-tools-Tool"
+          },
+          {
+            "label": "Supervisor",
+            "name": "supervisor",
+            "type": "Supervisor",
+            "id": "worker_2-input-supervisor-Supervisor"
+          },
+          {
+            "label": "Tool Calling Chat Model",
+            "name": "model",
+            "type": "BaseChatModel",
+            "optional": true,
+            "description": "Only compatible with models that are capable of function calling: ChatOpenAI, ChatMistral, ChatAnthropic, ChatGoogleGenerativeAI, ChatVertexAI, GroqChat. If not specified, supervisor's model will be used",
+            "id": "worker_2-input-model-BaseChatModel"
+          }
+        ],
+        "inputs": {
+          "workerName": "Report Writer",
+          "workerPrompt": "As a Report Writer, your task is to consolidate the analysis and strategy into a coherent and insightful report for the portfolio manager. Your ability to communicate complex information clearly and effectively is essential in guiding investment decisions and identifying future opportunities.\n\nYour goal is to create a detailed report for the portfolio manager of U.S. equity options, summarizing the analysis and strategy developed by the Option Data Analyst and Option Strategy Developer. The report should highlight key findings, recommended strategies, and potential investment opportunities.\n\nEnsure the report is structured, professional, and easy to understand. Avoid technical jargon and focus on actionable insights.\nThe final report should provide a comprehensive overview of the analysis and strategy, emphasizing how these insights can help the portfolio manager identify profitable investment and trading opportunities. Ensure the report is tailored to the manager's needs and objectives.\n\nAnnotations:\nEmphasized the need for clarity and avoidance of technical jargon to ensure accessibility for the portfolio manager.\nReinforced the importance of tailoring the report to the manager's specific needs and objectives.\n\nFinaly , use send_email to send report.\nThe email title is {title}\n\n#關於合約顯示\n當提到合約時，直接使用 Strike Price (履約價)的200.00 美元，\n例如以下：\n保護性賣權: 考慮在 200.00 美元價位購買賣權以對沖潛在的下行風險，利用高未平倉合約數量和交易量。\n而”不要使用”合約的名稱(NVDA241220P00100000)，\n例如以下：\n保護性賣權：購買ITM賣權如NVDA241220P00100000以對沖NVDA股價下跌的風險。\n\n#其他需求\n- 使用通順的台灣口吻與繁體中文撰寫報告\n- 報告應以 HTML 格式撰寫，有清楚的大小標題(H2,H3,H4,bullet point...等等)與段落\n- Strike Price 翻譯為\"履約價\";Option翻譯為\"\"選擇權\"\n- 當提到建議策略時，請在中文策略名稱後面加上(英文策略名稱)\n\n",
+          "tools": [
+            "{{customTool_1.data.instance}}"
+          ],
+          "supervisor": "{{supervisor_0.data.instance}}",
+          "model": "",
+          "promptValues": "{\"title\":\"{{question}}\"}",
+          "maxIterations": ""
+        },
+        "outputAnchors": [],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 723,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 1824.9488992154488,
+        "y": 391.21366496542385
+      }
+    },
+    {
+      "id": "customTool_1",
+      "position": {
+        "x": 1434.4681045386967,
+        "y": 9.64034108834312
+      },
+      "type": "customNode",
+      "data": {
+        "id": "customTool_1",
+        "label": "Custom Tool",
+        "version": 3,
+        "name": "customTool",
+        "type": "CustomTool",
+        "baseClasses": [
+          "CustomTool",
+          "Tool",
+          "StructuredTool",
+          "Runnable"
+        ],
+        "category": "Tools",
+        "description": "Use custom tool you've created in Flowise within chatflow",
+        "inputParams": [
+          {
+            "label": "Select Tool",
+            "name": "selectedTool",
+            "type": "asyncOptions",
+            "loadMethod": "listTools",
+            "id": "customTool_1-input-selectedTool-asyncOptions"
+          },
+          {
+            "label": "Return Direct",
+            "name": "returnDirect",
+            "description": "Return the output of the tool directly to the user",
+            "type": "boolean",
+            "optional": true,
+            "id": "customTool_1-input-returnDirect-boolean"
+          },
+          {
+            "label": "Custom Tool Name",
+            "name": "customToolName",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_1-input-customToolName-string"
+          },
+          {
+            "label": "Custom Tool Description",
+            "name": "customToolDesc",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_1-input-customToolDesc-string"
+          },
+          {
+            "label": "Custom Tool Schema",
+            "name": "customToolSchema",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_1-input-customToolSchema-string"
+          },
+          {
+            "label": "Custom Tool Func",
+            "name": "customToolFunc",
+            "type": "string",
+            "hidden": true,
+            "id": "customTool_1-input-customToolFunc-string"
+          }
+        ],
+        "inputAnchors": [],
+        "inputs": {
+          "selectedTool": "bd23149a-6e2b-4fa8-a501-4327eef9407e",
+          "returnDirect": false,
+          "customToolName": "",
+          "customToolDesc": "",
+          "customToolSchema": "",
+          "customToolFunc": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "customTool_1-output-customTool-CustomTool|Tool|StructuredTool|Runnable",
+            "name": "customTool",
+            "label": "CustomTool",
+            "description": "Use custom tool you've created in Flowise within chatflow",
+            "type": "CustomTool | Tool | StructuredTool | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 373,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 1434.4681045386967,
+        "y": 9.64034108834312
+      },
+      "dragging": false
+    },
+    {
+      "id": "retrieverTool_0",
+      "position": {
+        "x": 578.585860804974,
+        "y": 776.6806539058265
+      },
+      "type": "customNode",
+      "data": {
+        "id": "retrieverTool_0",
+        "label": "Retriever Tool",
+        "version": 3,
+        "name": "retrieverTool",
+        "type": "RetrieverTool",
+        "baseClasses": [
+          "RetrieverTool",
+          "DynamicTool",
+          "Tool",
+          "StructuredTool",
+          "Runnable"
+        ],
+        "category": "Tools",
+        "description": "Use a retriever as allowed tool for agent",
+        "inputParams": [
+          {
+            "label": "Retriever Name",
+            "name": "name",
+            "type": "string",
+            "placeholder": "search_state_of_union",
+            "id": "retrieverTool_0-input-name-string"
+          },
+          {
+            "label": "Retriever Description",
+            "name": "description",
+            "type": "string",
+            "description": "When should agent uses to retrieve documents",
+            "rows": 3,
+            "placeholder": "Searches and returns documents regarding the state-of-the-union.",
+            "id": "retrieverTool_0-input-description-string"
+          },
+          {
+            "label": "Return Source Documents",
+            "name": "returnSourceDocuments",
+            "type": "boolean",
+            "optional": true,
+            "id": "retrieverTool_0-input-returnSourceDocuments-boolean"
+          },
+          {
+            "label": "Additional Metadata Filter",
+            "name": "retrieverToolMetadataFilter",
+            "type": "json",
+            "description": "Add additional metadata filter on top of the existing filter from vector store",
+            "optional": true,
+            "additionalParams": true,
+            "hint": {
+              "label": "What can you filter?",
+              "value": "Add additional filters to vector store. You can also filter with flow config, including the current \"state\":\n- `$flow.sessionId`\n- `$flow.chatId`\n- `$flow.chatflowId`\n- `$flow.input`\n- `$flow.state`\n"
+            },
+            "id": "retrieverTool_0-input-retrieverToolMetadataFilter-json"
+          }
+        ],
+        "inputAnchors": [
+          {
+            "label": "Retriever",
+            "name": "retriever",
+            "type": "BaseRetriever",
+            "id": "retrieverTool_0-input-retriever-BaseRetriever"
+          }
+        ],
+        "inputs": {
+          "name": "get_option_knowledge",
+          "description": "當你需要交易的知識、技巧，以及 mechanism / strategy 的時候，使用這個工具(get_option_knowledge)來向 vector store 取得相關知識。",
+          "retriever": "{{documentStoreVS_0.data.instance}}",
+          "returnSourceDocuments": true,
+          "retrieverToolMetadataFilter": ""
+        },
+        "outputAnchors": [
+          {
+            "id": "retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable",
+            "name": "retrieverTool",
+            "label": "RetrieverTool",
+            "description": "Use a retriever as allowed tool for agent",
+            "type": "RetrieverTool | DynamicTool | Tool | StructuredTool | Runnable"
+          }
+        ],
+        "outputs": {},
+        "selected": false
+      },
+      "width": 300,
+      "height": 656,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 578.585860804974,
+        "y": 776.6806539058265
+      },
+      "dragging": false
+    },
+    {
+      "id": "documentStoreVS_0",
+      "position": {
+        "x": 149.18531428692137,
+        "y": 908.1981828976293
+      },
+      "type": "customNode",
+      "data": {
+        "id": "documentStoreVS_0",
+        "label": "Document Store (Vector)",
+        "version": 1,
+        "name": "documentStoreVS",
+        "type": "DocumentStoreVS",
+        "baseClasses": [
+          "DocumentStoreVS"
+        ],
+        "category": "Vector Stores",
+        "description": "Search and retrieve documents from Document Store",
+        "inputParams": [
+          {
+            "label": "Select Store",
+            "name": "selectedStore",
+            "type": "asyncOptions",
+            "loadMethod": "listStores",
+            "id": "documentStoreVS_0-input-selectedStore-asyncOptions"
+          }
+        ],
+        "inputAnchors": [],
+        "inputs": {
+          "selectedStore": "110caed3-18cb-460b-b009-d6f80ba760f5"
+        },
+        "outputAnchors": [
+          {
+            "name": "output",
+            "label": "Output",
+            "type": "options",
+            "description": "",
+            "options": [
+              {
+                "id": "documentStoreVS_0-output-retriever-BaseRetriever",
+                "name": "retriever",
+                "label": "Retriever",
+                "description": "",
+                "type": "BaseRetriever"
+              },
+              {
+                "id": "documentStoreVS_0-output-vectorStore-VectorStore",
+                "name": "vectorStore",
+                "label": "Vector Store",
+                "description": "",
+                "type": "VectorStore"
+              }
+            ],
+            "default": "retriever"
+          }
+        ],
+        "outputs": {
+          "output": "retriever"
+        },
+        "selected": false
+      },
+      "width": 300,
+      "height": 312,
+      "positionAbsolute": {
+        "x": 149.18531428692137,
+        "y": 908.1981828976293
+      },
+      "selected": false,
+      "dragging": false
+    }
+  ],
+  "edges": [
+    {
+      "source": "chatOpenAI_0",
+      "sourceHandle": "chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable",
+      "target": "supervisor_0",
+      "targetHandle": "supervisor_0-input-model-BaseChatModel",
+      "type": "buttonedge",
+      "id": "chatOpenAI_0-chatOpenAI_0-output-chatOpenAI-ChatOpenAI|BaseChatModel|BaseLanguageModel|Runnable-supervisor_0-supervisor_0-input-model-BaseChatModel"
+    },
+    {
+      "source": "supervisor_0",
+      "sourceHandle": "supervisor_0-output-supervisor-Supervisor",
+      "target": "worker_1",
+      "targetHandle": "worker_1-input-supervisor-Supervisor",
+      "type": "buttonedge",
+      "id": "supervisor_0-supervisor_0-output-supervisor-Supervisor-worker_1-worker_1-input-supervisor-Supervisor"
+    },
+    {
+      "source": "customTool_0",
+      "sourceHandle": "customTool_0-output-customTool-CustomTool|Tool|StructuredTool|Runnable",
+      "target": "worker_0",
+      "targetHandle": "worker_0-input-tools-Tool",
+      "type": "buttonedge",
+      "id": "customTool_0-customTool_0-output-customTool-CustomTool|Tool|StructuredTool|Runnable-worker_0-worker_0-input-tools-Tool"
+    },
+    {
+      "source": "customTool_0",
+      "sourceHandle": "customTool_0-output-customTool-CustomTool|Tool|StructuredTool|Runnable",
+      "target": "worker_1",
+      "targetHandle": "worker_1-input-tools-Tool",
+      "type": "buttonedge",
+      "id": "customTool_0-customTool_0-output-customTool-CustomTool|Tool|StructuredTool|Runnable-worker_1-worker_1-input-tools-Tool"
+    },
+    {
+      "source": "supervisor_0",
+      "sourceHandle": "supervisor_0-output-supervisor-Supervisor",
+      "target": "worker_2",
+      "targetHandle": "worker_2-input-supervisor-Supervisor",
+      "type": "buttonedge",
+      "id": "supervisor_0-supervisor_0-output-supervisor-Supervisor-worker_2-worker_2-input-supervisor-Supervisor"
+    },
+    {
+      "source": "customTool_1",
+      "sourceHandle": "customTool_1-output-customTool-CustomTool|Tool|StructuredTool|Runnable",
+      "target": "worker_2",
+      "targetHandle": "worker_2-input-tools-Tool",
+      "type": "buttonedge",
+      "id": "customTool_1-customTool_1-output-customTool-CustomTool|Tool|StructuredTool|Runnable-worker_2-worker_2-input-tools-Tool"
+    },
+    {
+      "source": "documentStoreVS_0",
+      "sourceHandle": "documentStoreVS_0-output-retriever-BaseRetriever",
+      "target": "retrieverTool_0",
+      "targetHandle": "retrieverTool_0-input-retriever-BaseRetriever",
+      "type": "buttonedge",
+      "id": "documentStoreVS_0-documentStoreVS_0-output-retriever-BaseRetriever-retrieverTool_0-retrieverTool_0-input-retriever-BaseRetriever"
+    },
+    {
+      "source": "retrieverTool_0",
+      "sourceHandle": "retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable",
+      "target": "worker_1",
+      "targetHandle": "worker_1-input-tools-Tool",
+      "type": "buttonedge",
+      "id": "retrieverTool_0-retrieverTool_0-output-retrieverTool-RetrieverTool|DynamicTool|Tool|StructuredTool|Runnable-worker_1-worker_1-input-tools-Tool"
+    },
+    {
+      "source": "supervisor_0",
+      "sourceHandle": "supervisor_0-output-supervisor-Supervisor",
+      "target": "worker_0",
+      "targetHandle": "worker_0-input-supervisor-Supervisor",
+      "type": "buttonedge",
+      "id": "supervisor_0-supervisor_0-output-supervisor-Supervisor-worker_0-worker_0-input-supervisor-Supervisor"
+    }
+  ]
+}

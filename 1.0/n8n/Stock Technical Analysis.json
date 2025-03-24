@@ -1,0 +1,538 @@
+{
+  "name": "Stock Techical Analysis",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        860,
+        20
+      ],
+      "id": "7608af81-02e2-4a32-a1ec-3e7794689614",
+      "name": "When chat message received",
+      "webhookId": "b0ceb9f0-f3dc-450e-99c6-0fd151f7de4a"
+    },
+    {
+      "parameters": {
+        "model": "claude-3-5-sonnet-20241022",
+        "options": {
+          "maxTokensToSample": 8192,
+          "temperature": 0.2,
+          "topP": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.2,
+      "position": [
+        1180,
+        260
+      ],
+      "id": "f56910eb-c57b-479e-ad8a-501de1aac235",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "bbfyEJjqPPl7ZxFd",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Params').item.json.sessionid }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [
+        1340,
+        260
+      ],
+      "id": "f3bbab13-5bdb-4e0e-ab94-aa090e8dc2c8",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "content": "## 技術分析取得＆解讀\n### 變更交易所設定在settings中，預設交易所為那斯達克(NASDAQ)\n如要查詢美股：需改為 NYSE / NASAQ / AMEX...等\n👉 詳情參考：https://doc.chart-img.com/#stocks-north-america",
+        "height": 428,
+        "width": 1132
+      },
+      "id": "9fb1c545-ca3c-4b87-a3d2-9a28674a474a",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "5389f4a2-3394-4b75-bd68-655e4c7d9d40",
+      "name": "Download Chart",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2260,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.chart-img.com/v2/tradingview/advanced-chart/storage",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "symbol",
+              "value": "={{ $json.exchange }}:{{ $json.company }}"
+            },
+            {
+              "name": "studies",
+              "value": "={{\n[\n      {\n        \"name\": \"Volume\"\n      },\n    {\n      \"name\": \"Moving Average\",\n      \"input\": {\n        \"length\": 20,\n        \"source\": \"close\",\n        \"offset\": 0,\n        \"smoothingLine\": \"SMA\",\n        \"smoothingLength\": 20\n      },\n      \"override\": {\n        \"Plot.linewidth\": 1,\n        \"Plot.plottype\": \"line\",\n        \"Plot.color\": \"rgb(33,150,243)\"\n      }\n    },   \n {\n      \"name\": \"Super Trend\",\n      \"input\": {\n        \"in_0\": 10,\n        \"in_1\": 3\n      },\n      \"override\": {\n        \"SuperTrend.plottype\": \"line\",\n        \"SuperTrend.color.0\": \"rgb(0,128,0)\",\n        \"SuperTrend.color.1\": \"rgb(128,0,0)\"\n      }\n    }\n    ]\n}}"
+            },
+            {
+              "name": "format",
+              "value": "jpeg"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f7bac48a-78ea-4e17-81a9-713595567f36",
+      "name": "Tradingview Chart",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2060,
+        160
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "JsCswnt8C2KkIXco",
+          "name": "Header Auth-ChartImg"
+        },
+        "httpBasicAuth": {
+          "id": "bly1XaGMqpLC4FlH",
+          "name": "Gucci's Crendentail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1eb4f1e8-207e-4fe7-8f05-37076d549d7d",
+              "name": "company",
+              "value": "={{ $json.query}}",
+              "type": "string"
+            },
+            {
+              "id": "10712ba2-d809-4dfe-870f-fc5d332ab556",
+              "name": "exchange",
+              "value": "NASDAQ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1880,
+        160
+      ],
+      "id": "bd1bc400-03e1-4a69-b024-a46235a4ea88",
+      "name": "Settings"
+    },
+    {
+      "parameters": {
+        "model": "claude-3-5-sonnet-20241022",
+        "options": {
+          "maxTokensToSample": 8192,
+          "temperature": 0.2,
+          "topP": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.2,
+      "position": [
+        2540,
+        320
+      ],
+      "id": "fe48c027-b8f9-4669-a1a3-df3bb4596841",
+      "name": "Anthropic Chat Model1",
+      "credentials": {
+        "anthropicApi": {
+          "id": "bbfyEJjqPPl7ZxFd",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "5552626b-3acf-4482-93cb-31c0a2c9141f",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "name": "technical_analysis",
+        "description": "This tool is useful for technical analysis of a stock. When processing the output of the tool, URLs returned should always be in markdown format. for example,![](url)",
+        "workflowId": "={{ $workflow.id }}"
+      },
+      "id": "5fb13d17-303c-4edb-9d93-82793c6dd83c",
+      "name": "Technical analysis",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        1520,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "options": {
+          "systemMessage": "=This is an advanced language model created by OpenAI.\n\nThis system is built to assist with diverse tasks, ranging from answering basic questions to providing comprehensive explanations and discussions across many topics. As a language model, it produces human-like text responses based on received inputs, enabling natural conversations and delivering contextually appropriate answers.\nThe system continuously evolves and improves its capabilities. It can process and understand extensive text data, using this knowledge to deliver accurate and informative responses to a wide spectrum of questions. The system can also generate text based on received inputs, facilitating discussions and providing detailed explanations across various subjects.\nIn summary, this is a versatile system designed to assist with many tasks and provide valuable insights across numerous topics. Whether you need specific answers or wish to explore a topic through conversation, this system is available to help.\nTechnical analyses will display URL graphs using markdown formatting.\n\nToday's date is {{ $now }} \n\n#其他要求\n- 使用通順的繁體中文回覆我\n- 附上技術分析圖片"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1300,
+        20
+      ],
+      "id": "6d8db294-3abe-41e7-a6bb-3ac78fe96e7d",
+      "name": "Technical Analysis Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a professional technical analyst. Please analyze {{ $('Settings').item.json.company }}based on the following technical indicators, focusing on medium to long-term trading opportunities (30-180 days holding period).\n使用通順的繁體中文回覆我\n\nAnalysis Date:  {{ $now }}\n\n1. Price Analysis\n   - Current Price: [Price]\n   - Chart Period: Daily\n   - Key candlestick patterns\n   - Recent price action formations\n   - Major support/resistance levels\n\n2. Core Technical Indicators\n\nA. SuperTrend (10,3) Analysis\n   - Current Status: [Uptrend/Downtrend]\n   - Indicator Color: [Green/Red]\n   - Position relative to price\n   - Recent signal changes\n   - Key reversal levels\n\nB. 20-day SMA Analysis\n   - Price position vs SMA\n   - Trend direction and momentum\n   - Recent crossovers\n   - Support/resistance behavior\n   - Price-MA interaction patterns\n\nC. Volume Analysis\n   - Current vs 20-day average volume\n   - Volume trend characteristics\n   - Trend confirmation by volume\n   - Unusual volume patterns\n   - Volume at key price levels\n\n3. Trading Recommendations\n   - Overall Trend: [Bullish/Bearish/Neutral]\n   - Trading Signal: [Enter/Hold/Exit]\n   - Entry Zones: [Price levels]\n   - Stop Loss: [Price levels]\n   - Target Price: [Price levels]\n   - Position Size Suggestion: [%]\n   - Risk/Reward Ratio\n\n4. Risk Assessment\n   - Primary technical risks\n   - Critical price levels\n   - Market warning signs\n   - Pattern failure scenarios\n   - Volume concerns\n\nPlease provide analysis focusing on multi-month holding period with clear entry, management, and exit strategies.\n\n##其他要求\n- 使用通順的繁體中文回覆我\n\n##字詞翻譯轉換\n- 回調 -> 回檔\n- 股利 -> 股息\n- 派息 -> 配息\n- 增長 -> 成長\n- 視頻 -> 影片\n- 音頻 -> 語音\n- 增長 -> 成長\n- 智能 -> 智慧\n- 邊程 -> 寫程式\n- 創建 -> 建立\n- 邊程 -> 程式開發",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "messageType": "imageBinary"
+            }
+          ]
+        }
+      },
+      "id": "646bef72-2de8-4d5b-928c-4dc72c944ea4",
+      "name": "Analyze Chart",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        2440,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e37e64f6-64e7-4fbd-9ea1-e9d3ef99b39c",
+              "name": "response",
+              "type": "string",
+              "value": "={{ $json.text }}\n\n圖片連結在此:\n\n{{ $('Tradingview Chart').item.json.url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "006fe62a-8f74-4cbc-ab78-a2c426c08b15",
+      "name": "Response",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2780,
+        160
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ed59fe4d-38b1-437f-bea0-f60da194c9dc",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        780,
+        180
+      ],
+      "id": "53b1b463-3c88-4ed3-9d83-c6980ef974bf",
+      "name": "Webhook",
+      "webhookId": "ed59fe4d-38b1-437f-bea0-f60da194c9dc"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1660,
+        -60
+      ],
+      "id": "a59545e3-ec23-45db-af22-454bb7f1d81f",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cbf805e4-db5f-4d62-893b-7fdd70b6a1b9",
+              "name": "chatInput",
+              "value": "={{ $json?.chatInput || $json.body.ticker }}",
+              "type": "string"
+            },
+            {
+              "id": "ddde670e-3fe1-4876-9a4a-e095270f28f0",
+              "name": "sessionid",
+              "value": "={{ $json?.sessionId || $json.sessionId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        20
+      ],
+      "id": "46b39612-1516-4b35-9a9d-70bf0de6c237",
+      "name": "Params"
+    },
+    {
+      "parameters": {
+        "jsCode": "function generateSessionId() {\n    const timestamp = Date.now().toString(36);\n    const random = Math.random().toString(36).substring(2, 8);\n    return timestamp + random;\n}\n\nitems[0].json.sessionId = generateSessionId();\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        180
+      ],
+      "id": "ad2c275e-801d-416d-a5cb-53aae4c2940a",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Technical Analysis Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Technical Analysis Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Chart": {
+      "main": [
+        [
+          {
+            "node": "Analyze Chart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tradingview Chart": {
+      "main": [
+        [
+          {
+            "node": "Download Chart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Settings": {
+      "main": [
+        [
+          {
+            "node": "Tradingview Chart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyze Chart",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Technical analysis": {
+      "ai_tool": [
+        [
+          {
+            "node": "Technical Analysis Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Chart": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Technical Analysis Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Params": {
+      "main": [
+        [
+          {
+            "node": "Technical Analysis Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "callerPolicy": "workflowsFromSameOwner",
+    "timezone": "Asia/Taipei"
+  },
+  "versionId": "2b2f3e95-488e-42d3-b40f-6299d3f6c043",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f1ebecbf08b94e56cb5800d7576e7d23fd19de8f753a7d14f117872b859ca2d0"
+  },
+  "id": "8VtuzaqgejzHOWly",
+  "tags": [
+    {
+      "createdAt": "2024-10-08T06:07:46.450Z",
+      "updatedAt": "2024-10-08T06:07:46.450Z",
+      "id": "GlSm404dH7IIusEV",
+      "name": "Stock"
+    }
+  ]
+}

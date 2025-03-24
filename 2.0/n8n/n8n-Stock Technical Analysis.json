@@ -1,0 +1,1308 @@
+{
+  "name": "Stock Techical Analysis",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        860,
+        20
+      ],
+      "id": "7608af81-02e2-4a32-a1ec-3e7794689614",
+      "name": "When chat message received",
+      "webhookId": "b0ceb9f0-f3dc-450e-99c6-0fd151f7de4a"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Params').item.json.sessionid }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [
+        1320,
+        260
+      ],
+      "id": "f3bbab13-5bdb-4e0e-ab94-aa090e8dc2c8",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "content": "## 技術分析取得＆解讀\n### 變更交易所設定在settings中，預設交易所為那斯達克(NASDAQ)\n如要查詢美股：需改為 NYSE / NASAQ / AMEX...等\n👉 詳情參考：https://doc.chart-img.com/#stocks-north-america",
+        "height": 428,
+        "width": 2032
+      },
+      "id": "9fb1c545-ca3c-4b87-a3d2-9a28674a474a",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "5389f4a2-3394-4b75-bd68-655e4c7d9d40",
+      "name": "Download Chart",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2560,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1eb4f1e8-207e-4fe7-8f05-37076d549d7d",
+              "name": "company",
+              "value": "={{ $json.query}}",
+              "type": "string"
+            },
+            {
+              "id": "10712ba2-d809-4dfe-870f-fc5d332ab556",
+              "name": "exchange",
+              "value": "NASDAQ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2180,
+        -100
+      ],
+      "id": "bd1bc400-03e1-4a69-b024-a46235a4ea88",
+      "name": "Settings"
+    },
+    {
+      "parameters": {},
+      "id": "5552626b-3acf-4482-93cb-31c0a2c9141f",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "name": "technical_analysis",
+        "description": "This tool is useful for technical analysis of a stock. When processing the output of the tool, URLs returned should always be in markdown format. for example,![](url)",
+        "workflowId": "={{ $workflow.id }}"
+      },
+      "id": "5fb13d17-303c-4edb-9d93-82793c6dd83c",
+      "name": "Technical analysis",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        1440,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=This is an advanced language model created by OpenAI.\n\n使用通順的繁體中文回覆我，\n\n字數最大4,000個字符，並在分析文最後附上日線與週線技術分析圖片。\n\nThis system is built to assist with diverse tasks, ranging from answering basic questions to providing comprehensive explanations and discussions across many topics. As a language model, it produces human-like text responses based on received inputs, enabling natural conversations and delivering contextually appropriate answers.\nThe system continuously evolves and improves its capabilities. It can process and understand extensive text data, using this knowledge to deliver accurate and informative responses to a wide spectrum of questions. The system can also generate text based on received inputs, facilitating discussions and providing detailed explanations across various subjects.\nIn summary, this is a versatile system designed to assist with many tasks and provide valuable insights across numerous topics. Whether you need specific answers or wish to explore a topic through conversation, this system is available to help.\n\nToday's date is {{ $now }} \n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1300,
+        20
+      ],
+      "id": "6d8db294-3abe-41e7-a6bb-3ac78fe96e7d",
+      "name": "Technical Analysis Agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e37e64f6-64e7-4fbd-9ea1-e9d3ef99b39c",
+              "name": "response",
+              "type": "string",
+              "value": "={{ $json.text }}\n\n圖片連結在此:\n\n日線：\n{{ $('Tradingview Daily').item.json.url }}\n\n週線：\n{{ $('Tradingview Weekly').item.json.url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "006fe62a-8f74-4cbc-ab78-a2c426c08b15",
+      "name": "Response",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        3800,
+        -80
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ed59fe4d-38b1-437f-bea0-f60da194c9dc",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        780,
+        180
+      ],
+      "id": "53b1b463-3c88-4ed3-9d83-c6980ef974bf",
+      "name": "Webhook",
+      "webhookId": "ed59fe4d-38b1-437f-bea0-f60da194c9dc"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1680,
+        -60
+      ],
+      "id": "a59545e3-ec23-45db-af22-454bb7f1d81f",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cbf805e4-db5f-4d62-893b-7fdd70b6a1b9",
+              "name": "chatInput",
+              "value": "={{ $json?.chatInput || $json.body.ticker }}",
+              "type": "string"
+            },
+            {
+              "id": "ddde670e-3fe1-4876-9a4a-e095270f28f0",
+              "name": "sessionid",
+              "value": "={{ $json?.sessionId || $json.sessionId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        20
+      ],
+      "id": "46b39612-1516-4b35-9a9d-70bf0de6c237",
+      "name": "Params"
+    },
+    {
+      "parameters": {
+        "jsCode": "function generateSessionId() {\n    const timestamp = Date.now().toString(36);\n    const random = Math.random().toString(36).substring(2, 8);\n    return timestamp + random;\n}\n\nitems[0].json.sessionId = generateSessionId();\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        180
+      ],
+      "id": "ad2c275e-801d-416d-a5cb-53aae4c2940a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "chatId": "change to your chat id",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1680,
+        -240
+      ],
+      "id": "6ede468a-7494-454d-a9a2-d32377359763",
+      "name": "Telegram",
+      "webhookId": "6d30a729-67b3-48d7-8aae-adebc3185142",
+      "credentials": {
+        "telegramApi": {
+          "id": "szCEEOdTecGbmXQX",
+          "name": "Telegram account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use this tool to insert data for future trading ",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "apppiTSWzJFZxliMi",
+          "mode": "list",
+          "cachedResultName": "Stock Watch",
+          "cachedResultUrl": "https://airtable.com/apppiTSWzJFZxliMi"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl1Vd6UCEEKfW4al",
+          "mode": "list",
+          "cachedResultName": "Trade",
+          "cachedResultUrl": "https://airtable.com/apppiTSWzJFZxliMi/tbl1Vd6UCEEKfW4al"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ticker": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Ticker', `股票代號`, 'string') }}",
+            "Current Price": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Current_Price', `目前股價`, 'number') }}",
+            "Target Price": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Target_Price', `目標價`, 'number') }}",
+            "Profit Margin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Profit_Margin', `獲利空間(目前股價與目標價之間的差距%)`, 'number') }}",
+            "Type": "={{ $fromAI(\"type\") }}",
+            "R倍數": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('R__', ``, 'number') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Ticker",
+              "displayName": "Ticker",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Long",
+                  "value": "Long"
+                },
+                {
+                  "name": "Short",
+                  "value": "Short"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "R倍數",
+              "displayName": "R倍數",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Current Price",
+              "displayName": "Current Price",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Target Price",
+              "displayName": "Target Price",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Profit Margin",
+              "displayName": "Profit Margin",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        1680,
+        480
+      ],
+      "id": "67b8ecec-df46-4f17-9d63-6309a0bdbfba",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "oBSDcdxlAnZAEc4h",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Params').item.json.sessionid }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1540,
+        480
+      ],
+      "id": "0dacde4c-9349-4fb1-b606-fe5e15fb19dc",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a data analyst.\nWrite to Airtable when the conditions are met. The conditions are placed in the #Insert Airtable Rule section.\n\n#Insert Airtable Rule\n- 當投資建議為買進、賣出、上漲趨勢或下跌趨勢時，寫入欄位 Ticker,Type,R倍數,Current Price,Target Price,Profit Margin\n\n- 寫入規則如下：\n1.當投資建議為下跌趨勢：檢查風險報酬比(R倍數)是否大於等於1.0 && 預期報酬率大於等於5%。\n如果以上條件都成立，則使用 Airtable tool\nTicker由使用者輸入，Type值為 'Short'\n\n2.當投資建議為上漲趨勢，或者是下跌趨勢停止/舒緩，開始出現趨勢反轉時。\n檢查風險報酬比(R倍數)是否大於等於1.0 && 預期報酬率大於等於5%。\n如果以上條件都成立，則使用 Airtable tool\nTicker由使用者輸入，Type值為 'Long'\n\n- 當投資建議為沒有明確趨勢，建議觀望時，不需寫入 Airtable\n\n- 當 Target Price 同時有短期與中期時，選擇用中期或者同時有第一目標價與第二目標價時，使用第一目標價。\nProfit Margin = ABS((Target Price - Current Price)/Current Price)\n\n#其他規則\n- 如果缺乏 Target Price、風險報酬比(R倍數)、Profit Margin 數據時，都設為0即可，不要自行的隨意計算\n- 當條件不符合#Insert Airtable Rule，則不使用任何Tool"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        1640,
+        260
+      ],
+      "id": "d648e4ac-51a1-4bd7-87b0-e21058ab3395",
+      "name": "Trading Agent"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"Ticker\": \"NVDA\",\n\t\"Type\": \"Long\",\n    \"R倍數\":1.5,\n    \"Current Price\":110,\n    \"Target Price\":135,\n    \"Profit Margin\":0.1\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1840,
+        480
+      ],
+      "id": "a4eb2d99-e3bf-4e7e-898f-13c8dbf64a03",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "chatId": "6408969468",
+        "text": "=以下標的因符合條件，已寫入資料到 Airtable 作為交易觀察名單\n-----交易資訊-----\n代號：{{ $('Trading Agent').item.json.output.Ticker }}\n方向：{{ $('Trading Agent').item.json.output.Type }}\n風險報酬比：{{ $('Trading Agent').item.json.output[\"R倍數\"] }}倍\n目前股價：{{ $('Trading Agent').item.json.output[\"Current Price\"] }}\n目標價格：{{ $('Trading Agent').item.json.output[\"Target Price\"] }}\n預期獲利：{{ Number($('Trading Agent').item.json.output[\"Profit Margin\"]*100 || 0).toFixed(1) }}％\n-----最新財報摘要-----\n{{ $json.response }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2420,
+        440
+      ],
+      "id": "ecf4a30e-91af-46f0-a326-2cd339016546",
+      "name": "Telegram1",
+      "webhookId": "6d30a729-67b3-48d7-8aae-adebc3185142",
+      "credentials": {
+        "telegramApi": {
+          "id": "szCEEOdTecGbmXQX",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-3-7-sonnet-20250219",
+          "mode": "list",
+          "cachedResultName": "Claude 3.7 Sonnet"
+        },
+        "options": {
+          "maxTokensToSample": 8192,
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        1180,
+        260
+      ],
+      "id": "22409046-2292-4a0f-a68c-5b59c94384c0",
+      "name": "Anthropic Chat Model2",
+      "credentials": {
+        "anthropicApi": {
+          "id": "bbfyEJjqPPl7ZxFd",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dfcc04b3-f95e-4cfb-bdf5-b37e349acafb",
+              "leftValue": "={{ $json.output[\"R倍數\"] }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "6f6257e7-859c-4d20-a076-89ee28297746",
+              "leftValue": "={{ $json.output[\"Profit Margin\"] }}",
+              "rightValue": 0.05,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2000,
+        260
+      ],
+      "id": "d5d753ca-f0eb-4b4d-b068-fc3fda1bbb31",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3.7-sonnet",
+        "options": {
+          "maxTokens": 8192,
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2860,
+        -20
+      ],
+      "id": "6503f409-7cc1-4316-a4d5-615f209e40ac",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "3OIAHKkvc10ylb12",
+          "name": "OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "3dd8c1fa-d4b5-4434-be4d-f408839e5619",
+      "name": "Download Chart1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2560,
+        100
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3140,
+        -80
+      ],
+      "id": "4423397d-4a5b-465d-9a42-837ef8c32cae",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "append",
+              "field": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        3320,
+        -80
+      ],
+      "id": "0a6f6f36-72b4-43e8-96f1-14ba062ea80e",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analysis Date: {{$now}}\n\n## 日線分析摘要\n{{ $json.appended_text[0] }}\n\n## 週線分析摘要\n{{ $json.appended_text[1] }}\n\n# 整合技術分析報告\n\n## 1. 價格與趨勢概述\n- 目前價格與整體趨勢狀態\n- 日線主要趨勢方向與強度\n- 週線趨勢確認情況\n- 價格相對於關鍵支撐阻力位置\n- 跨時間框架趨勢一致性評估\n\n## 2. 技術分析摘要\n- SuperTrend信號在日線與週線的狀態\n- 移動平均線系統跨時間框架分析\n- 動能指標(MACD、RSI)關鍵讀數與確認\n- 波動性指標(ATR、布林帶)重要數值\n- 成交量分析與跨時間框架確認\n- 關鍵技術形態與影響\n\n## 3. 多時間框架信號確認系統\n- 日線3/4規則信號結果\n- 週線對日線信號的支持/反對程度\n- 跨時間框架確認強度[強/中/弱]\n- 任何顯著的時間框架衝突與解決方案\n- 最終確認信號判定[確認/部分確認/未確認]\n\n## 4. 詳細交易建議\n- 綜合趨勢判斷：[強烈看漲/看漲/中性/看跌/強烈看跌]\n- 交易信號：[進場/持有/出場]\n\nA. 如果看漲(多頭):\n   - 建議進場區間：[具體價格範圍]\n   - 止損位：[具體價格] (基於日線ATR，週線確認)\n   - 目標價格：\n     * 第一目標(保守)：[具體價格] - [技術依據]\n     * 第二目標(進取)：[具體價格] - [技術依據]\n   - R倍數：[具體數值]計算\n   - 預期獲利百分比：[具體數值]%\n\nB. 如果看跌(空頭):\n   - 建議進場區間：[具體價格範圍]\n   - 止損位：[具體價格] (基於日線ATR，週線確認)\n   - 目標價格：\n     * 第一目標(保守)：[具體價格] - [技術依據]\n     * 第二目標(進取)：[具體價格] - [技術依據]\n   - R倍數：[具體數值]計算\n   - 預期獲利百分比：[具體數值]%\n\n- 建議倉位大小：[%]\n- 交易時機與執行策略\n- 階段性目標與調整點\n\n## 5. 風險評估\n- 主要技術風險因素\n- 週線圖識別的額外風險考量\n- 關鍵反轉價格與警戒點\n- 潛在信號失敗情境\n- 跨時間框架的風險監控重點\n- 如何管理及降低已識別風險\n\n## 6. 結論\n- 最終交易建議摘要\n- 主要理由與技術依據\n- 關鍵監控指標與時間點\n- 交易計劃時效性與後續更新建議\n\n請提供詳細而全面的整合分析，確保所有交易參數清晰明確，並著重說明關鍵技術依據。報告應突出日線分析為主導，同時展示週線趨勢如何確認或調整主要交易觀點。",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a professional technical analyst creating a comprehensive trading recommendation based primarily on daily chart analysis, with weekly chart serving as trend confirmation. Please synthesize a detailed final analysis report for {{$('Settings').item.json.company}} focused on medium-term (30-180 days) trading opportunities.\n不需要額外輸出週線趨勢確認分析，週線分析僅作為趨勢確認使用。\n\n使用通順的繁體中文回覆我。\n\n##字詞翻譯轉換\n- 回調 -> 回檔\n- 股利 -> 股息\n- 派息 -> 配息\n- 增長 -> 成長\n- 視頻 -> 影片\n- 音頻 -> 語音\n- 智能 -> 智慧\n- 邊程 -> 寫程式\n- 創建 -> 建立\n- 編程 -> 程式開發"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        3480,
+        -80
+      ],
+      "id": "949d75e8-19e7-445d-a33d-e1590e71d59c",
+      "name": "Consolidate Daily&Weekly"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analysis Date: {{$now}}\n\n# 以下是日線分析結果\n\n## 1. 核心價格分析\n- 目前價格與趨勢概述\n- 關鍵支撐/阻力位\n- 重要K線形態與價格結構\n- 圖表時間範圍：日線圖(主要)與週線圖(確認)\n\n## 2. 趨勢指標分析\nA. SuperTrend (10,3)：\n   - 目前狀態：[上升趨勢/下降趨勢]\n   - 信號顏色：[綠色/紅色]\n   - 與價格的相對位置與最近變化\n\nB. 移動平均線系統：\n   - 20日SMA：短期趨勢方向\n   - 50日SMA：中期趨勢方向\n   - 200日SMA：長期趨勢方向\n   - 黃金/死亡交叉情況\n   - 價格與均線的關係(支撐/阻力)\n\n## 3. 確認指標分析\nA. 動能確認：\n   - MACD (12,26,9)狀態與信號\n   - RSI (14)水平與方向[超買/超賣/中性]\n\nB. 波動性分析：\n   - ATR (14)數值與趨勢\n   - 布林帶(20,2)寬度與價格位置\n\nC. 成交量分析：\n   - 目前成交量vs.20日平均\n   - 成交量趨勢特徵\n   - OBV走勢與價格確認\n\n## 4. 信號確認系統(3/4規則)\n以下信號中，至少滿足3項才確認交易方向：\n- SuperTrend信號方向[看漲/看跌]\n- 價格與20日SMA關係[上方/下方]\n- MACD信號線交叉[買入/賣出]\n- RSI相對位置[>50看漲/<50看跌]\n\n## 5. 交易建議\n- 綜合趨勢判斷：[強烈看漲/看漲/中性/看跌/強烈看跌]\n- 交易信號：[進場/持有/出場]\n\nA. 如果看漲(多頭):\n   - 進場區間：[價格區間]\n   - 止損位：入場價 - (2 × ATR)，約[具體數值]\n   \n   - 獲利目標：[高於目前價格的目標]\n   - 目標價依據：\n     * 第一目標(保守)：[數值] - 基於[支撐阻力/圖表形態/指標水平]\n     * 第二目標(進取)：[數值] - 基於[支撐阻力/圖表形態/指標水平]\n   \n   - R倍數計算：(目標價 - 入場價) ÷ (入場價 - 止損位) = ?R\n\nB. 如果看跌(空頭):\n   - 進場區間：[價格區間]\n   - 止損位：入場價 + (2 × ATR)，約[具體數值]\n   \n   - 獲利目標：[低於目前價格的目標]\n   - 目標價依據：\n     * 第一目標(保守)：[數值] - 基於[支撐阻力/圖表形態/指標水平]\n     * 第二目標(進取)：[數值] - 基於[支撐阻力/圖表形態/指標水平]\n   \n   - R倍數計算：(入場價 - 目標價) ÷ (止損位 - 入場價) = ?R\n\n- 建議倉位大小：[%，基於固定風險管理]\n\n## 6. 風險評估\n- 主要技術風險\n- 關鍵反轉價格\n- 潛在信號失敗情境\n- 週線圖確認情況\n\n請提供綜合判斷並清晰說明理由，重點解釋關鍵指標之間的相互確認/矛盾情況。只有當多項指標同時確認時才給出明確入場建議。分析目標價時必須說明技術依據，如支撐阻力位、圖表形態測量、斐波那契水平、布林帶目標、均線位置、量能目標或波動幅度投射等。\n\n## 目標價設定參考依據\n分析目標價時，請從以下技術因素中選擇最適合的依據：\n\n1. 前期支撐/阻力位：歷史高低點、交易密集區\n2. 圖表形態投射：頭肩頂/底、三角形/旗形/楔形等形態測量目標\n3. 斐波那契水平：延伸(127.2%, 161.8%)或回調(38.2%, 50%, 61.8%)\n4. 布林帶目標：布林帶上/下軌或寬度投射\n5. 移動平均線目標：重要均線位置或交叉點\n6. 量能目標：成交量分佈峰值、成交量力場高低點\n7. 波動幅度投射：基於ATR的波動範圍(如3倍ATR)\n\n每個目標價必須選擇至少一項技術依據，並解釋為何這是合理的價格目標。",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "messageType": "imageBinary"
+            },
+            {
+              "message": "=You are a professional technical analyst specialized in medium-term trading (30-180 days holding period) based on Daily candle chart. Please analyze {{$('Settings').item.json.company}} using the following framework.  \n\n使用通順的繁體中文回覆我  \n\n##字詞翻譯轉換 \n- 回調 -> 回檔 \n- 股利 -> 股息 \n- 派息 -> 配息 \n- 視頻 -> 影片 \n- 音頻 -> 語音 \n- 增長 -> 成長 \n- 智能 -> 智慧 \n- 編程 -> 寫程式"
+            }
+          ]
+        }
+      },
+      "id": "646bef72-2de8-4d5b-928c-4dc72c944ea4",
+      "name": "Analyze Daily Chart",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        2760,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analysis Date: {{$now}}\n\n# 以下是週線分析結果\n\n## 1. 中期趨勢評估\n- 近12個月週線趨勢方向與強度[上升/盤整/下降]\n- 主要趨勢線與通道分析\n- 週線趨勢階段判定[初期/中期/後期]\n- SuperTrend週線指標狀態\n\n## 2. 關鍵價位分析\n- 12個月內主要支撐位[價格區間與重要性]\n- 12個月內主要阻力位[價格區間與重要性]\n- 目前價格相對區間位置評估\n- 中期價值區間判定\n\n## 3. 週線指標分析\n- 週線RSI(14)：中期超買/超賣狀態\n- 週線MACD(12,26,9)：中期動能\n- 週線平均線系統：10週/20週/50週均線關係\n- 週線布林帶(20,2)位置與寬度\n\n## 4. 中期價格形態\n- 近期形成的週線圖形態\n- 週線突破/回踩情況\n- 近期的反轉信號\n- 中期趨勢強度評估\n\n## 5. 週線成交量特徵\n- 週線成交量趨勢\n- 重要週線量價關係\n- 週線OBV趨勢\n- 異常成交量週分析\n\n## 6. 日線與週線協同分析\n- 日線與週線趨勢一致性判斷\n- 趨勢衝突分析(如有)\n- 週線如何支持或反對日線信號\n- 日線信號在週線背景下的可靠性\n\n## 7. 中期展望(30-180天)\n- 未來1-6個月趨勢預期\n- 關鍵轉折點識別\n- 中期持有的主要風險\n- 最值得關注的週線預警信號\n\n請提供週線圖的中期趨勢分析，特別強調週線和日線信號的一致性或差異性，為30-180天的交易決策提供參考。分析應關注形態的完整性、趨勢的強度以及支撐阻力位的可靠性。",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "messageType": "imageBinary"
+            },
+            {
+              "message": "=You are a professional technical analyst specializing in weekly chart analysis. Please analyze the weekly chart of {{$('Settings').item.json.company}} for the past 12 months, focusing on trend confirmation to support medium-term (30-180 days) trading decisions.  \n\n使用通順的繁體中文回覆我  \n\n##字詞翻譯轉換 \n- 回調 -> 回檔 \n- 股利 -> 股息 \n- 派息 -> 配息 \n- 視頻 -> 影片 \n- 音頻 -> 語音 \n- 增長 -> 成長 \n- 智能 -> 智慧 \n- 編程 -> 寫程式"
+            }
+          ]
+        }
+      },
+      "id": "76cc5597-622c-4276-84f8-68a62d6a7173",
+      "name": "Analyze Weekly Chart",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        2760,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.chart-img.com/v2/tradingview/advanced-chart/storage",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "symbol",
+              "value": "={{ $json.exchange }}:{{ $json.company }}"
+            },
+            {
+              "name": "studies",
+              "value": "={{\n[\n      {\n        \"name\": \"Volume\"\n      },\n    {\n      \"name\": \"Moving Average\",\n      \"input\": {\n        \"length\": 20,\n        \"source\": \"close\",\n        \"offset\": 0,\n        \"smoothingLine\": \"SMA\",\n        \"smoothingLength\": 20\n      },\n      \"override\": {\n        \"Plot.linewidth\": 1,\n        \"Plot.plottype\": \"line\",\n        \"Plot.color\": \"rgb(255,13,20)\"\n      }\n    },   \n {\n      \"name\": \"Moving Average\",\n      \"input\": {\n        \"length\": 50,\n        \"source\": \"close\",\n        \"offset\": 0,\n        \"smoothingLine\": \"SMA\",\n        \"smoothingLength\": 50\n      },\n      \"override\": {\n        \"Plot.linewidth\": 2,\n        \"Plot.plottype\": \"line\",\n        \"Plot.color\": \"rgb(47,203,13)\"\n      }\n    },   \n {\n      \"name\": \"Moving Average\",\n      \"input\": {\n        \"length\": 200,\n        \"source\": \"close\",\n        \"offset\": 0,\n        \"smoothingLine\": \"SMA\",\n        \"smoothingLength\": 200\n      },\n      \"override\": {\n        \"Plot.linewidth\": 1,\n        \"Plot.plottype\": \"line\",\n        \"Plot.color\": \"rgb(240,130,21)\"\n      }\n    },   \n {\n      \"name\": \"Super Trend\",\n      \"input\": {\n        \"in_0\": 10,\n        \"in_1\": 3\n      },\n      \"override\": {\n        \"SuperTrend.plottype\": \"line\",\n        \"SuperTrend.color.0\": \"rgb(0,128,0)\",\n        \"SuperTrend.color.1\": \"rgb(128,0,0)\"\n      }\n    },\n {\n      \"name\": \"MACD\",\n      \"forceOverlay\": false,\n      \"input\": {\n        \"in_0\": 12,\n        \"in_1\": 26,\n        \"in_2\": 9,\n        \"in_3\": \"close\"\n      },\n      \"override\": {\n        \"Histogram.visible\": true,\n        \"Histogram.plottype\": \"columns\",\n        \"Histogram.color.0\": \"rgb(34,171,148)\",\n        \"Histogram.color.1\": \"rgb(172,229,220)\",\n        \"Histogram.color.2\": \"rgb(252,203,205)\",\n        \"Histogram.color.3\": \"rgb(255,82,82)\",\n        \"MACD.visible\": true,\n        \"MACD.linewidth\": 1,\n        \"MACD.plottype\": \"line\",\n        \"MACD.color\": \"rgb(33,150,243)\",\n        \"Signal.visible\": true,\n        \"Signal.linewidth\": 1,\n        \"Signal.plottype\": \"line\",\n        \"Signal.color\": \"rgb(255,109,0)\"\n      }\n    },\n{\n      \"name\": \"Relative Strength Index\",\n      \"forceOverlay\": false,\n      \"input\": {\n        \"length\": 14,\n        \"smoothingLine\": \"SMA\",\n        \"smoothingLength\": 14\n      },\n      \"override\": {\n        \"Plot.linewidth\": 1,\n        \"Plot.plottype\": \"line\",\n        \"Plot.color\": \"rgb(126,87,194)\",\n        \"UpperLimit.visible\": true,\n        \"UpperLimit.linestyle\": 2,\n        \"UpperLimit.linewidth\": 1,\n        \"UpperLimit.value\": 70,\n        \"UpperLimit.color\": \"rgb(120,123,134)\",\n        \"LowerLimit.visible\": true,\n        \"LowerLimit.linestyle\": 2,\n        \"LowerLimit.linewidth\": 1,\n        \"LowerLimit.value\": 30,\n        \"LowerLimit.color\": \"rgb(120,123,134)\",\n        \"Hlines Background.visible\": true,\n        \"Hlines Background.color\": \"rgba(126,87,194,0.1)\"\n      }\n    },\n{\n      \"name\": \"On Balance Volume\",\n      \"forceOverlay\": false,\n      \"input\": {\n        \"smoothingLine\": \"SMA\",\n        \"smoothingLength\": 9\n      },\n      \"override\": {\n        \"Plot.linewidth\": 1,\n        \"Plot.plottype\": \"line\",\n        \"Plot.color\": \"rgb(33,150,243)\"\n      }\n    },\n{\n      \"name\": \"Average True Range\",\n      \"forceOverlay\": false,\n      \"input\": {\n        \"in_0\": 14\n      },\n      \"override\": {\n        \"Plot.linewidth\": 1,\n        \"Plot.color\": \"rgb(128,25,34)\"\n      }\n    },\n{\n      \"name\": \"Bollinger Bands\",\n      \"input\": {\n        \"in_0\": 20,\n        \"in_1\": 2\n      },\n      \"override\": {\n        \"Median.visible\": true,\n        \"Median.linewidth\": 1,\n        \"Median.plottype\": \"line\",\n        \"Median.color\": \"rgb(255,109,0)\",\n        \"Upper.visible\": true,\n        \"Upper.linewidth\": 1,\n        \"Upper.plottype\": \"line\",\n        \"Upper.color\": \"rgb(33,150,243)\",\n        \"Lower.visible\": true,\n        \"Lower.linewidth\": 1,\n        \"Lower.plottype\": \"line\",\n        \"Lower.color\": \"rgb(33,150,243)\",\n        \"Plots Background.visible\": true,\n        \"Plots Background.color\": \"rgba(33,150,243,0.1)\"\n      }\n    }\n]\n}}"
+            },
+            {
+              "name": "format",
+              "value": "jpeg"
+            },
+            {
+              "name": "width",
+              "value": "1920"
+            },
+            {
+              "name": "height",
+              "value": "1080"
+            },
+            {
+              "name": "range",
+              "value": "6M"
+            },
+            {
+              "name": "interval",
+              "value": "1D"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f7bac48a-78ea-4e17-81a9-713595567f36",
+      "name": "Tradingview Daily",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2360,
+        -100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "JsCswnt8C2KkIXco",
+          "name": "Header Auth-ChartImg"
+        },
+        "httpBasicAuth": {
+          "id": "bly1XaGMqpLC4FlH",
+          "name": "Gucci's Crendentail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.chart-img.com/v2/tradingview/advanced-chart/storage",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "symbol",
+              "value": "={{ $json.exchange }}:{{ $json.company }}"
+            },
+            {
+              "name": "studies",
+              "value": "={{\n[\n      {\n        \"name\": \"Volume\"\n      },\n    {\n      \"name\": \"Moving Average\",\n      \"input\": {\n        \"length\": 20,\n        \"source\": \"close\",\n        \"offset\": 0,\n        \"smoothingLine\": \"SMA\",\n        \"smoothingLength\": 20\n      },\n      \"override\": {\n        \"Plot.linewidth\": 1,\n        \"Plot.plottype\": \"line\",\n        \"Plot.color\": \"rgb(255,13,20)\"\n      }\n    },   \n {\n      \"name\": \"Moving Average\",\n      \"input\": {\n        \"length\": 50,\n        \"source\": \"close\",\n        \"offset\": 0,\n        \"smoothingLine\": \"SMA\",\n        \"smoothingLength\": 50\n      },\n      \"override\": {\n        \"Plot.linewidth\": 2,\n        \"Plot.plottype\": \"line\",\n        \"Plot.color\": \"rgb(47,203,13)\"\n      }\n    },   \n {\n      \"name\": \"Moving Average\",\n      \"input\": {\n        \"length\": 200,\n        \"source\": \"close\",\n        \"offset\": 0,\n        \"smoothingLine\": \"SMA\",\n        \"smoothingLength\": 200\n      },\n      \"override\": {\n        \"Plot.linewidth\": 1,\n        \"Plot.plottype\": \"line\",\n        \"Plot.color\": \"rgb(240,130,21)\"\n      }\n    },   \n {\n      \"name\": \"Super Trend\",\n      \"input\": {\n        \"in_0\": 10,\n        \"in_1\": 3\n      },\n      \"override\": {\n        \"SuperTrend.plottype\": \"line\",\n        \"SuperTrend.color.0\": \"rgb(0,128,0)\",\n        \"SuperTrend.color.1\": \"rgb(128,0,0)\"\n      }\n    },\n {\n      \"name\": \"MACD\",\n      \"forceOverlay\": false,\n      \"input\": {\n        \"in_0\": 12,\n        \"in_1\": 26,\n        \"in_2\": 9,\n        \"in_3\": \"close\"\n      },\n      \"override\": {\n        \"Histogram.visible\": true,\n        \"Histogram.plottype\": \"columns\",\n        \"Histogram.color.0\": \"rgb(34,171,148)\",\n        \"Histogram.color.1\": \"rgb(172,229,220)\",\n        \"Histogram.color.2\": \"rgb(252,203,205)\",\n        \"Histogram.color.3\": \"rgb(255,82,82)\",\n        \"MACD.visible\": true,\n        \"MACD.linewidth\": 1,\n        \"MACD.plottype\": \"line\",\n        \"MACD.color\": \"rgb(33,150,243)\",\n        \"Signal.visible\": true,\n        \"Signal.linewidth\": 1,\n        \"Signal.plottype\": \"line\",\n        \"Signal.color\": \"rgb(255,109,0)\"\n      }\n    },\n{\n      \"name\": \"Relative Strength Index\",\n      \"forceOverlay\": false,\n      \"input\": {\n        \"length\": 14,\n        \"smoothingLine\": \"SMA\",\n        \"smoothingLength\": 14\n      },\n      \"override\": {\n        \"Plot.linewidth\": 1,\n        \"Plot.plottype\": \"line\",\n        \"Plot.color\": \"rgb(126,87,194)\",\n        \"UpperLimit.visible\": true,\n        \"UpperLimit.linestyle\": 2,\n        \"UpperLimit.linewidth\": 1,\n        \"UpperLimit.value\": 70,\n        \"UpperLimit.color\": \"rgb(120,123,134)\",\n        \"LowerLimit.visible\": true,\n        \"LowerLimit.linestyle\": 2,\n        \"LowerLimit.linewidth\": 1,\n        \"LowerLimit.value\": 30,\n        \"LowerLimit.color\": \"rgb(120,123,134)\",\n        \"Hlines Background.visible\": true,\n        \"Hlines Background.color\": \"rgba(126,87,194,0.1)\"\n      }\n    },\n{\n      \"name\": \"On Balance Volume\",\n      \"forceOverlay\": false,\n      \"input\": {\n        \"smoothingLine\": \"SMA\",\n        \"smoothingLength\": 9\n      },\n      \"override\": {\n        \"Plot.linewidth\": 1,\n        \"Plot.plottype\": \"line\",\n        \"Plot.color\": \"rgb(33,150,243)\"\n      }\n    },\n{\n      \"name\": \"Average True Range\",\n      \"forceOverlay\": false,\n      \"input\": {\n        \"in_0\": 14\n      },\n      \"override\": {\n        \"Plot.linewidth\": 1,\n        \"Plot.color\": \"rgb(128,25,34)\"\n      }\n    },\n{\n      \"name\": \"Bollinger Bands\",\n      \"input\": {\n        \"in_0\": 20,\n        \"in_1\": 2\n      },\n      \"override\": {\n        \"Median.visible\": true,\n        \"Median.linewidth\": 1,\n        \"Median.plottype\": \"line\",\n        \"Median.color\": \"rgb(255,109,0)\",\n        \"Upper.visible\": true,\n        \"Upper.linewidth\": 1,\n        \"Upper.plottype\": \"line\",\n        \"Upper.color\": \"rgb(33,150,243)\",\n        \"Lower.visible\": true,\n        \"Lower.linewidth\": 1,\n        \"Lower.plottype\": \"line\",\n        \"Lower.color\": \"rgb(33,150,243)\",\n        \"Plots Background.visible\": true,\n        \"Plots Background.color\": \"rgba(33,150,243,0.1)\"\n      }\n    }\n]\n}}"
+            },
+            {
+              "name": "format",
+              "value": "jpeg"
+            },
+            {
+              "name": "width",
+              "value": "1920"
+            },
+            {
+              "name": "height",
+              "value": "1080"
+            },
+            {
+              "name": "interval",
+              "value": "1W"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3c295d02-b516-4678-82bb-4382982dae8a",
+      "name": "Tradingview Weekly",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2360,
+        100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "JsCswnt8C2KkIXco",
+          "name": "Header Auth-ChartImg"
+        },
+        "httpBasicAuth": {
+          "id": "bly1XaGMqpLC4FlH",
+          "name": "Gucci's Crendentail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3.7-sonnet:thinking",
+        "options": {
+          "maxTokens": 8192,
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3560,
+        80
+      ],
+      "id": "9e81e8ed-af0b-4d21-b140-f77c2b0e6022",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "3OIAHKkvc10ylb12",
+          "name": "OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "tWb5RcM2C5VUMqH2",
+          "mode": "list",
+          "cachedResultName": "Flowise-Earnings"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query": "={{ $json.output[\"Ticker\"] }}最新財報分析與未來展望"
+          },
+          "matchingColumns": [
+            "query"
+          ],
+          "schema": [
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2240,
+        440
+      ],
+      "id": "3d9c7653-1381-4bae-aafb-42bbc3d5327f",
+      "name": "Execute Workflow(10-Q)"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2420,
+        280
+      ],
+      "id": "668dbbac-6eed-40fd-aabf-eda9cae0a535",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "change to your n8n-Deep Research AI Agent Webhook url",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Topic",
+              "value": "={{ $json.output[\"Ticker\"] }}近期股價狀況、基本面與未來展望"
+            },
+            {
+              "name": "Tone",
+              "value": "專業"
+            },
+            {
+              "name": "Words",
+              "value": "2500"
+            },
+            {
+              "name": "Sections",
+              "value": "6"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 1000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2240,
+        280
+      ],
+      "id": "fb4456f5-309e-49bc-8103-73a82df99757",
+      "name": "Deep Research長文",
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Technical Analysis Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Chart": {
+      "main": [
+        [
+          {
+            "node": "Analyze Daily Chart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Settings": {
+      "main": [
+        [
+          {
+            "node": "Tradingview Daily",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tradingview Weekly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Technical analysis": {
+      "ai_tool": [
+        [
+          {
+            "node": "Technical Analysis Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Technical Analysis Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Trading Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Params": {
+      "main": [
+        [
+          {
+            "node": "Technical Analysis Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "ai_tool": [
+        [
+          {
+            "node": "Trading Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Trading Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Trading Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trading Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Technical Analysis Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Trading Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow(10-Q)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Deep Research長文",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyze Daily Chart",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Analyze Weekly Chart",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Chart1": {
+      "main": [
+        [
+          {
+            "node": "Analyze Weekly Chart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response": {
+      "main": [
+        []
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Consolidate Daily&Weekly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidate Daily&Weekly": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Daily Chart": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Weekly Chart": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Tradingview Daily": {
+      "main": [
+        [
+          {
+            "node": "Download Chart",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tradingview Weekly": {
+      "main": [
+        [
+          {
+            "node": "Download Chart1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Consolidate Daily&Weekly",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow(10-Q)": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deep Research長文": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "callerPolicy": "workflowsFromSameOwner",
+    "timezone": "Asia/Taipei"
+  },
+  "versionId": "316eaf56-4c15-4fb4-89f0-6c84ac23f3ce",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f1ebecbf08b94e56cb5800d7576e7d23fd19de8f753a7d14f117872b859ca2d0"
+  },
+  "id": "8VtuzaqgejzHOWly",
+  "tags": [
+    {
+      "createdAt": "2024-10-08T06:07:46.450Z",
+      "updatedAt": "2024-10-08T06:07:46.450Z",
+      "id": "GlSm404dH7IIusEV",
+      "name": "Stock"
+    }
+  ]
+}

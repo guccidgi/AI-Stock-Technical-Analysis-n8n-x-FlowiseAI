@@ -1,0 +1,1476 @@
+{
+  "name": "Deep Research AI Agent-Sonar-webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "8ee060d4-246b-455b-b5f9-ef396e5786a2",
+        "formTitle": "研究主題",
+        "formDescription": "提供主題細節",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Topic",
+              "placeholder": "特斯拉的未來＆電動車趨勢",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Tone",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "專業"
+                  },
+                  {
+                    "option": "正式"
+                  },
+                  {
+                    "option": "輕鬆"
+                  },
+                  {
+                    "option": "機智"
+                  },
+                  {
+                    "option": "同理心"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Words",
+              "placeholder": "1500",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Sections",
+              "placeholder": "5",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "423d8363-2516-40d6-a4de-02b7f3565782",
+      "name": "n8n Form Trigger",
+      "type": "n8n-nodes-base.formTrigger",
+      "position": [
+        640,
+        200
+      ],
+      "webhookId": "8ee060d4-246b-455b-b5f9-ef396e5786a2",
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "content": "## 資深研究部主管 👑\n規劃文章架構\n\n",
+        "height": 449,
+        "width": 418,
+        "color": 3
+      },
+      "id": "be31d656-f471-4a6d-990d-1c5d78936f59",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        40
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 專案經理工作分配 ⚙️\n工作落地計畫與分配",
+        "height": 451,
+        "width": 597,
+        "color": 2
+      },
+      "id": "7000db80-b0a7-474a-a00d-d2d2c00188e3",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1320,
+        40
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 資深研究員深入研究 🧑‍🔬\n搜尋彙整研究資料",
+        "height": 454,
+        "width": 677
+      },
+      "id": "1d473af2-5144-4b81-a3ef-734df40a13e6",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1940,
+        40
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 資深編輯整合報告 📝 \n統一文章風格",
+        "height": 449,
+        "width": 511,
+        "color": 4
+      },
+      "id": "fb4291ec-ef5d-4761-bc7a-d5aea6a8c676",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2640,
+        40
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 發布到落格 ＆ Google Docs 📰",
+        "height": 449,
+        "width": 902,
+        "color": 5
+      },
+      "id": "5fd07972-f8a4-462c-942f-fbfd4183b17f",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3180,
+        40
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        580
+      ],
+      "id": "8c359308-ad4c-48de-bf73-13e7b0781397",
+      "name": "Execute Workflow Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "33b7b279-e993-45cf-9e34-37a29a5819ee",
+              "name": "response",
+              "value": "={{ $json.choices[0].message.content }}\n\nCitations:\n{{ $json.citations }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1640,
+        580
+      ],
+      "id": "65e4afe5-b450-4631-88d1-042bc81d96e9",
+      "name": "Response"
+    },
+    {
+      "parameters": {
+        "content": "## Perplexity API\n- Sign-up account in OpenRouter to access Perplexity API\n- Set API key in the Perplexity API node\n- Credential \n  * Auth type : Header\n  * Name : Authorization \n  * Value: Bearer <your api-key value>",
+        "height": 214,
+        "width": 974,
+        "color": 7
+      },
+      "id": "ce93a935-7a05-4b21-991d-ad142e247580",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        540
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.perplexity.ai/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"sonar-reasoning-pro\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a professional data collection assistant. Provide clear,precise,factual summaries with verified sources.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.query.query }}\"\n    }\n  ],\n  \"temperature\": 0.2,\n  \"top_p\": 0.9,\n  \"return_images\": false,\n  \"search_recency_filter\": \"month\",\n  \"return_related_questions\": false,\n  \"top_k\": 0,\n  \"stream\": false,\n  \"presence_penalty\": 0,\n  \"frequency_penalty\": 1\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1480,
+        580
+      ],
+      "id": "4ef18c1b-fd4b-4fdc-807b-bc034fa798ff",
+      "name": "Perplexity API",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "NGlyH4gHxdUi02HP",
+          "name": "Header Auth-Perplexity"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"subtitle\": {\n      \"type\": \"string\"\n    },\n    \"introduction\": {\n      \"type\": \"string\"\n    },\n    \"conclusions\": {\n      \"type\": \"string\"\n    },\n    \"imagePrompt\": {\n      \"type\": \"string\"\n    },\n    \"chapters\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"title\": {\n            \"type\": \"string\"\n          },\n          \"prompt\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"title\",\n          \"prompt\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"subtitle\",\n    \"introduction\",\n    \"conclusions\",\n    \"imagePrompt\",\n    \"chapters\"\n  ]\n}"
+      },
+      "id": "5a9d09f0-9c7f-47df-a725-88cec15df348",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1820,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.chapters",
+        "options": {}
+      },
+      "id": "08061749-75aa-4705-9309-3650679663df",
+      "name": "Delegate to Research Assistants",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        1980,
+        160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "title": "={{ $json.output.title }}",
+        "additionalFields": {
+          "content": "={{ $('Senior Editor-整理報告').item.json.output }}",
+          "slug": "={{ $json.output.article_slug }}",
+          "status": "draft"
+        }
+      },
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        3800,
+        280
+      ],
+      "id": "f7cbcf74-41ef-4121-91ee-58d3e97fa573",
+      "name": "Wordpress",
+      "credentials": {
+        "wordpressApi": {
+          "id": "Um6L2XvsQ4s9nLZ3",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "perplexity_ai_search",
+        "description": "Use this to do research using Perplexity online model.",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $workflow.id}}",
+          "cachedResultName": "={{ $workflow.id}}"
+        },
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n\"type\": \"object\",\n\"properties\": {\n\t\"query\": {\n\t\t\"type\": \"string\",\n\t\t\"description\": \"perplexity search term\"\n\t\t}\n\t}\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1360,
+        360
+      ],
+      "id": "186c23d0-869b-4d9c-8608-ccf93895fca4",
+      "name": "Perplexity_Search"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "45b826cf-4217-431d-9b5a-eeada9ccdd98",
+      "name": "OpenAI Chat Model 2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        360
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "2Lh3Ct62UhbXC7jq",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "perplexity_ai_search",
+        "description": "Use this to do research using Perplexity online model.",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $workflow.id}}",
+          "cachedResultName": "={{ $workflow.id}}"
+        },
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n\"type\": \"object\",\n\"properties\": {\n\t\"query\": {\n\t\t\"type\": \"string\",\n\t\t\"description\": \"perplexity search term\"\n\t\t}\n\t}\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        360
+      ],
+      "id": "c131d977-8c28-4f9a-bad4-fc7388822a2b",
+      "name": "Perplexity_Search 2"
+    },
+    {
+      "parameters": {
+        "name": "perplexity_ai_search",
+        "description": "Use this to do research using Perplexity online model.",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $workflow.id}}",
+          "cachedResultName": "={{ $workflow.id}}"
+        },
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n\"type\": \"object\",\n\"properties\": {\n\t\"query\": {\n\t\t\"type\": \"string\",\n\t\t\"description\": \"perplexity search term\"\n\t\t}\n\t}\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2420,
+        360
+      ],
+      "id": "e648b924-fe8e-4e63-9076-024a7b17d3b9",
+      "name": "Perplexity_Search 3"
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "=用通順的台灣繁體中文潤飾以下文章，\n以 html 格式提供完整的輸出內容，不要遺漏任何原有內容，不作任何內容修改。尤其不要大幅刪減內容。\n {{ $json.article }}\n\n# 其他要求\n- 段落使用 <H2>\n- Sources 使用 <H5>\n- 在文章結尾加上以下文字：\n👉 本篇文章由n8n AI Agent 整理撰寫。\n\n[免責聲明]\n本資料僅供意見參考使用，不得作為任何金融商品推介買賣之依據， 亦不得作為向他人提出投資建議使用。 本人已就可靠資料提供個人適當意見與資訊，但不保證資料完整性， 如有遺漏或偏頗之處，請瀏覽人士，自行承擔一切風險，本評論不負擔盈虧之法律責任。\n其中所出現的個股標的僅作為分析使用，並無意圖引介任何人至美國券商開戶，亦無意圖向任何人推薦投資標的，您仍需靠自身勤勉地研究後再做投資決策。此外本人與文章所提及的企業亦沒有商業往來與擔任任何該企業職務。\n\n",
+        "options": {
+          "systemMessage": "=您是一位資深編輯，專門提升內容質量，審核多位作者的作品，並確保學術誠信與正確的來源標註。您的目標是提供高品質、SEO優化的文章，幫助讀者獲得有價值的知識。\n\n#內容審核指南\n* 全面閱讀：仔細閱讀整篇內容，了解其主旨。\n* 語言檢查：修正語法、拼寫及標點錯誤，確保語言流暢。\n* 風格一致：保持語調、風格及聲音的一致性，使文章統一。\n* 需求對齊：確保內容符合原始要求與項目目標。\n* 提升可讀性：優化句子結構和段落流暢度，讓讀者更容易理解。\n* SEO優化：優化標題、副標題及格式，增加關鍵詞密度，提高搜索引擎排名。\n* 質量提升：提出改進建議，增強內容的深度和廣度。\n\n#引用管理指南\n* 保留引用：保留原作者的內嵌引用，格式為 [來源：作者/出版名稱]。\n* 消除重複：移除不同部分的重複引用，保持引用精簡。\n* 統一格式：統一引用格式，確保一致性。\n* 正確歸屬：確認所有引用內容正確歸屬，避免抄襲。\n* 流暢閱讀：確保引用不影響文章的流暢性。\n* 鏈接核對：核對所有內嵌引用與對應的來源鏈接，確保其有效性。\n\n# 統一來源文件格式\n* 在文章末尾（結論後）建立一個「來源」部分。\n* 每個來源條目使用一致的HTML格式：\n<li><a href=\"[URL]\">[出版名稱] - [文章標題]</a></li>\n* 每個來源應包含：\n- 出版/作者名稱\n- 文章標題（如有）\n- 完整URL\n- 文章日期（如有）\n* 按出版名稱字母順序排列，移除重複條目，確保所有鏈接有效。\n\n# SEO與格式指南\n* HTML格式：保持全文正確的HTML格式，確保結構清晰。\n* 關鍵詞優化：確保引用不影響關鍵詞的自然融入。\n* 標題標籤：使用適當的標題標籤（h1, h2, h3）來結構化內容。\n* Meta標籤：如需，包含適當的meta描述和標題標籤，提升搜索引擎可見性。\n\n# 輸出格式\n* 主要內容：包含內嵌引用的主要內容。\n* 來源部分：文章末尾的一個「來源」部分，包含所有引用鏈接。\n\n# 其他要求\n* 學術誠信：保持學術誠信，確保內容可讀性。\n* SEO與引用平衡：平衡SEO優化與正確引用，提升文章價值。\n* 貢獻歸屬：正確歸屬所有作者的貢獻。\n* 原意保留：保留引用內容的原意與意圖，避免曲解。\n* 流暢過渡：確保不同作者段落之間有自然的過渡。\n\n今天日期為： {{ $now }}"
+        }
+      },
+      "id": "2d2d99bd-5d9d-4d25-a5de-40bc025be5d9",
+      "name": "Senior Editor-整理報告",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        3060,
+        160
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Topic to research: {{ $json.Topic }}\n\n\n\n",
+        "options": {
+          "systemMessage": "=你是一名研究專家，幫助讀者從零到專精\n這份框架旨在協助你以「研究導向」的方式建構內容，從基礎脈絡到專家觀點、實務案例和未來趨勢，讓一般讀者也能迅速掌握核心知識，同時滿足深度學習者的需求。\n\n研究導向內容框架\n一、使用情境與目標\n* 受眾需求：一般讀者或專業人士，想快速了解核心概念、實務案例與最新趨勢。\n* 價值：透過「研究導向」的方法，產出系統化的高品質內容，增強說服力與可執行性。\n\n二、任務流程\n1. 設定主題與範圍：先鎖定研究問題、想達成的目標。\n2. 網路蒐集與資訊整合：利用搜尋工具收集最新研究、產業案例。\n3. 提煉核心洞見：萃取重要觀點、最佳實務和挑戰解法。\n4. 建立目錄大綱：同時考量基礎理論與應用案例。\n5. 行動化：提供具體對策、建議資源與後續發展路徑。\n\n三、Topic Analysis（主題分析）\n* 主題概述與當前意義：說明它「為何重要」，並概括最新趨勢或社會影響。\n* 潛在應用領域：列舉典型應用場景與可能的受眾需求。\n\n四、Key Research Insights（研究核心洞見）\n* 洞見1：權威數據或專家報告\n* 洞見2：最新業界案例與趨勢\n* 洞見3：常見挑戰與對應策略\n\n五、Proposed Table of Contents（建議目錄架構）\n1. 前言：主題概觀 & 時事意義\n2. 背景脈絡：歷史發展 & 核心概念\n3. 核心議題與主要發現\n    * 關鍵研究 & 專家觀點\n    * 實務案例 & 成功/失敗教訓\n4. 常見問題 & 解決對策\n5. 未來發展 & 新機會\n6. 結論 & 行動建議\n\n六、Research Sources（參考與延伸資源）\n* 權威文獻：學術期刊、白皮書\n* 專家訪談：行業領袖、研討會紀錄\n* 線上課程 & 工具：官方報告、論壇、專業平台\n\n七、使用說明（Usage Instructions）\n1. 指定主題（如：AI 在教育領域）\n2. 使用搜尋工具（Perplexity_Search）取得最新資料\n3. 將研究成果套用到目錄，理論與案例並重\n4. 豐富段落：整合專家觀點、數據與案例\n5. 多元應用：可直接用於文章、白皮書、課程教材\n\nToday’s Date is {{ $now }}\n"
+        }
+      },
+      "id": "cf6c55bd-6aab-44ee-ae4e-dc7b7511e9e7",
+      "name": "Research Manager-制定架構",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1180,
+        160
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=請為一篇 SEO 友善的文章產生 JSON 輸出。\n必須包含：\n\ntitle: 文章標題\nsubtitle: 文章副標題\nintroduction: 約 100 字的前言（用 HTML 格式，介紹主題並鋪陳全文）\nchapters: 一個陣列，每個元素都有 title 與 prompt。\n不要在章節標題前加上「Chapter 1」、「Chapter 2」等字樣\n每個章節約略擁有「深度分析」內容並相互連貫\nconclusions: 約 100 字的結論（用 HTML 格式，總結全文並給予讀者結論）\nimagePrompt: 生成文章封面用的攝影風格描述，必須與文章主題呼應\n請使用 {{ $json.output }} 中的主題建立 {{ $('Setting').item.Sections }}\n\n個章節。\n整篇文章應有邏輯延續、切勿重複相同概念。\n不要使用冒號（:） 於標題文字。\n請以 {{ $('Setting').item.Tone }} 的風格撰寫全篇，並確保內容深入探討主題。\n撰寫前可透過 Perplexity_Search 2 工具進行資料蒐集。\n\nToday's date is: {{ $now }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "id": "3db3422a-8757-4527-8462-f286ce63c7ca",
+      "name": "Project Manager-工作拆解",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1580,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=請用通順的台灣繁體中文為一篇副標題為「{{ $('Project Manager-工作拆解').item.json.output.subtitle }}」的文章撰寫新章節。\n章節標題為「{{ $json.title }}」，並在內容中聚焦說明「{{ $json.prompt }}」。\n撰寫完成後，務必加入由 Perplexity_Search 3 提供的引用（citations）。",
+        "options": {
+          "systemMessage": "=You are a dedicated Research Assistant AI agent, working as part of a research team under the guidance of a Research Leader and Project Planner. Your task is to write a chapter in the as part of the overall research into a topic.\n\nGuidelines:\n- Just return the plain text for each chapter (no JSON structure).\n- Use the perplexity_ai_search tool to research the topic in the chapter\n- Use html format for output\n- Don't add internal titles or headings.\n- The length of each chapther should be around {{ Math.round($('Setting').item.json['Words'] - 120)/ $('Setting').item.json['Sections']}} words long- Go deep in the topic you treat, don't just throw some superficial info\n{{ $itemIndex > 0 ? \"- The previous chapter talks about \" + $input.all()[$itemIndex-1].json.title : \"\" }}\n{{ $itemIndex > 0 ? \"- The promt for the previous chapter is \" + $input.all()[$itemIndex-1].json.prompt : \"\" }}\n{{ $itemIndex < $input.all().length ? \"- The following chapter will talk about \" + $input.all()[$itemIndex+1].json.title: \"\" }}\n{{ $itemIndex < $input.all().length ? \"- The prompt for the following chapter is \" + $input.all()[$itemIndex+1].json.prompt : \"\" }}\n- Consider the previous and following chapters what writing the text for this chapter. The text must be coherent with the previous and following chapters.\n- This chapter should not repeat the concepts already exposed in the previous chapter.\n- This chapter is a part of a larger article so don't include an introduction or conclusions. This chapter should merge with the rest of the article.\n- Please write in a style that is {{ $('Setting').item.json.Tone }}\n- Please use the perplexity online tool as source of information to use to write the chapter\n- Make sure to include citations from the perplexity_ai_search tool in your writing\n\nCitation Guidelines:\n- Use the perplexity_ai_search tool to gather information and cite sources\n- For each major claim or piece of information, include a hyperlinked inline citation\n- Format citations as HTML links with descriptive text:\n  <a href=\"[URL]\">[Source: Publication Name]</a>\n  Examples of proper citation format:\n  - \"According to recent data <a href=\"https://www.mckinsey.com/article-url\">[Source: McKinsey & Company]</a>...\"\n- When directly quoting from a source, use quotation marks and include the citation\n- Integrate citations naturally into the flow of the text without disrupting readability\n- Ensure all cited information is relevant and supports the chapter's main points\n- Verify that citations are accurate and come directly from the perplexity_ai_search results\n- Balance cited content with original analysis and synthesis\n- When citing statistics or specific data points, include the year if available in the citation\n\n\nContent Integration:\n- Smoothly blend cited information with original analysis\n- Use transitions to connect cited material with your own insights\n- Maintain the specified tone while incorporating citations\n- Ensure citations support rather than dominate the narrative\n- Use a mix of paraphrasing and direct quotes when citing sources\n\nSources Section Requirements:\n- At the end of your chapter, include a \"Sources\" section\n- Format the sources section as follows:\n\n<hr>\n<h3>Sources</h3>\n<ul>\n<li><a href=\"[URL]\">[Publication Name] - [Article Title]</a></li>\n[Additional sources...]\n</ul>\n\nSource List Guidelines:\n- List each unique source used in your chapter\n- Include the full URL from the perplexity_ai_search results\n- Order sources alphabetically by publication name\n- Include article titles when available\n- Each source should only appear once in the list\n- Ensure all URLs are functional and properly formatted\n- Include all sources referenced in your in-text citations\n- Match source names exactly as used in in-text citations\n\nExample Source Entry:\n<li><a href=\"https://www.mckinsey.com/article-path\">McKinsey & Company - The Future of AI in Business</a></li>\n\nQuality Control:\n- Verify that every in-text citation has a corresponding entry in the Sources section\n- Check that all URLs are complete and accurate\n- Ensure consistency between in-text citation names and source list entries\n- Confirm all cited information is relevant and supports the chapter's main points\n- Balance cited content with original analysis and synthesis\n\n\nToday's date is : {{ $now }}\n"
+        }
+      },
+      "id": "bb805eb9-c42e-4bdd-bc6d-2723d7e2757b",
+      "name": "Senior Researcher-深入研究",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        2240,
+        120
+      ],
+      "retryOnFail": true,
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "folderId": "1oYra8COeLLgvm_TupfERSdu0HbO2dD5T",
+        "title": "=Research Topic_{{ $now.format('yyyyMMdd HH:mm:ss') }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3800,
+        120
+      ],
+      "id": "ad4de52a-af65-4437-bcff-1cb6e0178a4a",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "TWFulgxZ7WpMcLD5",
+          "name": "Google Docs (GucciDGI)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Senior Editor-整理報告').item.json.output }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3980,
+        120
+      ],
+      "id": "64feed92-72b5-4b8b-95f3-6c9ca54869a4",
+      "name": "Google Docs1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "TWFulgxZ7WpMcLD5",
+          "name": "Google Docs (GucciDGI)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app24c0VmI2nKifUR",
+          "mode": "list",
+          "cachedResultName": "Content Pool",
+          "cachedResultUrl": "https://airtable.com/app24c0VmI2nKifUR"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblf7rPaJ1FGB2QG5",
+          "mode": "list",
+          "cachedResultName": "Gen Img for Wordpress",
+          "cachedResultUrl": "https://airtable.com/app24c0VmI2nKifUR/tblf7rPaJ1FGB2QG5"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "={{ $json.title.raw }}",
+            "Status": "Approved",
+            "Model": "DALLE3",
+            "Prompt": "={{ $('標題與圖片建立').item.json.output.image_prompt }}",
+            "Post_ID": "={{ $json.id.toString() }}",
+            "Article_Slug": "={{ $json.slug }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Post_ID",
+              "displayName": "Post_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Article_Slug",
+              "displayName": "Article_Slug",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Prompt",
+              "displayName": "Prompt",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Model",
+              "displayName": "Model",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "DALLE3",
+                  "value": "DALLE3"
+                },
+                {
+                  "name": "Flux",
+                  "value": "Flux"
+                },
+                {
+                  "name": "MidJourney",
+                  "value": "MidJourney"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Review",
+                  "value": "Review"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3980,
+        280
+      ],
+      "id": "071e7808-92c3-42d3-9720-d2b6ee8ab65f",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "oBSDcdxlAnZAEc4h",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let content = \"\";\n\n// Get introduction\ncontent += $('Project Manager-工作拆解').first().json.output.introduction;\n\n// Process items\nfor (const item of $input.all()) {\n  content += \"<strong>\" + item.json.title + \"</strong>\";\n  content += item.json.output;\n  content += \"<br>\";\n}\n\n// Add conclusions\ncontent += \"<strong>Conclusions</strong>\";\ncontent += $('Project Manager-工作拆解').first().json.output.conclusions;\n\nreturn [\n  {\n    \"article\": content\n  }\n];"
+      },
+      "id": "f246d80a-2f12-4210-abf4-211b17265656",
+      "name": "文章排版",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        2900,
+        160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"title\": {\n      \"type\": \"string\"\n    },\n    \"image_prompt\": {\n      \"type\": \"string\"\n    },\n     \"article_slug\": {\n      \"type\": \"string\"\n    }\n },\n  \"required\": [\n    \"title\",\n    \"image_prompt\",\n    \"article_slug\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        3600,
+        360
+      ],
+      "id": "d5e46ab4-5dd1-4515-83b0-e675b8fad4bc",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "6da354d8-02ec-4bd8-80f5-c49975ecf259",
+      "name": "合併章節標題與內文",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        2660,
+        200
+      ],
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=1.請依據下列文章內容提供一個吸睛、且能創造話題的文章標題最好帶點衝突感引發好奇，並且只以純文字形式呈現，不得包含任何排版或格式化。只需要回傳標題即可，不需要解釋原因。\n\n2.請根據下列文章的重點，濃縮成該篇文章想傳達的重要概念，轉成 Mid Journey/DALLE/flux...等 AI text to image 的 prompt。\n#圖片要求\n- 圖片概念簡單、清楚表達重要概念，讓讀者一眼就能懂。\n- 圖片比例為 16:9\n- 開頭不需要輸出 \"Prompt\"，只需要輸出給 AI 的 Prompt即可。\n\n3.根據下列文章內容生成 blog post 的 slug，最多30個英文字(包含符號)，空格用\"-\"連接。\n{{ $json.output }}\n\n#其他要求\n-一律使用通順的繁體中文回覆，不要使用簡體中文。",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "你是一名百萬KOL，擅長製作吸引人閱讀，有衝突性或話題性的標題與縮圖。"
+            }
+          ]
+        }
+      },
+      "id": "ea33aa97-56b5-4296-8705-6da0c78b7f65",
+      "name": "標題與圖片建立",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        3440,
+        160
+      ],
+      "typeVersion": 1.4
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app24c0VmI2nKifUR",
+          "mode": "list",
+          "cachedResultName": "Content Pool",
+          "cachedResultUrl": "https://airtable.com/app24c0VmI2nKifUR"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblJ9yTXT6DSItd4i",
+          "mode": "list",
+          "cachedResultName": "Content",
+          "cachedResultUrl": "https://airtable.com/app24c0VmI2nKifUR/tblJ9yTXT6DSItd4i"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Send2Social": false,
+            "Source Type": "n8n Research",
+            "Send_To_Platform": "={{ [\"Facebook\",\"LinkedIn\"] }}",
+            "Copy": "={{ $('Senior Editor-整理報告').item.json.output }}",
+            "Title": "={{ $('標題與圖片建立').item.json.output.title }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Idea",
+              "displayName": "Idea",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Org Transcription",
+              "displayName": "Org Transcription",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Copy",
+              "displayName": "Copy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Images",
+              "displayName": "Images",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "IG_Reel_Video",
+              "displayName": "IG_Reel_Video",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Videos",
+              "displayName": "Videos",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source Type",
+              "displayName": "Source Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Idea Form",
+                  "value": "Idea Form"
+                },
+                {
+                  "name": "Community Post",
+                  "value": "Community Post"
+                },
+                {
+                  "name": "Audio Upload",
+                  "value": "Audio Upload"
+                },
+                {
+                  "name": "Video Upload",
+                  "value": "Video Upload"
+                },
+                {
+                  "name": "Web Content",
+                  "value": "Web Content"
+                },
+                {
+                  "name": "YT Transcription",
+                  "value": "YT Transcription"
+                },
+                {
+                  "name": "n8n Research",
+                  "value": "n8n Research"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Trainsformation Actions",
+              "displayName": "Trainsformation Actions",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Video_Bg",
+              "displayName": "Video_Bg",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Send_To_Platform",
+              "displayName": "Send_To_Platform",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "X/Twitter",
+                  "value": "X/Twitter"
+                },
+                {
+                  "name": "Instagram",
+                  "value": "Instagram"
+                },
+                {
+                  "name": "Facebook",
+                  "value": "Facebook"
+                },
+                {
+                  "name": "LinkedIn",
+                  "value": "LinkedIn"
+                },
+                {
+                  "name": "IG Reel",
+                  "value": "IG Reel"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Send2Social",
+              "displayName": "Send2Social",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Create_Date",
+              "displayName": "Create_Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Action Name (from Trainsformation Actions)",
+              "displayName": "Action Name (from Trainsformation Actions)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "ID (from Trainsformation Actions)",
+              "displayName": "ID (from Trainsformation Actions)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Webhook URL (from Trainsformation Actions)",
+              "displayName": "Webhook URL (from Trainsformation Actions)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "bg_url",
+              "displayName": "bg_url",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        4160,
+        280
+      ],
+      "id": "7bce1a2e-1543-436d-a17d-2df3e8162671",
+      "name": "Airtable1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "oBSDcdxlAnZAEc4h",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "=o3-mini-2025-01-31",
+        "options": {}
+      },
+      "id": "71a7bfdd-f6ca-4dc2-8828-234edf4c6b58",
+      "name": "o3-mini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        360
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "2Lh3Ct62UhbXC7jq",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "=o3-mini-2025-01-31",
+        "options": {}
+      },
+      "id": "a445c34a-582c-468e-8396-b6bb682a2c21",
+      "name": "o3-mini1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        360
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "2Lh3Ct62UhbXC7jq",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3.7-sonnet",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        360
+      ],
+      "id": "ba72a91f-aa4e-47f6-8d25-abf61372c88a",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "3OIAHKkvc10ylb12",
+          "name": "OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3.5-sonnet",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3460,
+        360
+      ],
+      "id": "b3f8ebfd-b035-446f-8958-5d9961fcd6cb",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "3OIAHKkvc10ylb12",
+          "name": "OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fcb69973-e0f4-4825-9e6e-97a5789fd6f8",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        640,
+        20
+      ],
+      "id": "63485f9d-51c8-4b53-9e69-e79b14d7ea25",
+      "name": "Webhook",
+      "webhookId": "fcb69973-e0f4-4825-9e6e-97a5789fd6f8"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        4340,
+        280
+      ],
+      "id": "42685845-d957-4f0d-82d9-edc45fb2b378",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "60dd17d3-af0c-46f2-b786-5787047e7f89",
+              "name": "Topic",
+              "value": "={{ $json?.Topic || $json.body.Topic }}",
+              "type": "string"
+            },
+            {
+              "id": "a2652802-df46-4473-9897-5679f3ca729e",
+              "name": "Tone",
+              "value": "={{ $json?.Tone || '專業' }}",
+              "type": "string"
+            },
+            {
+              "id": "d372fe22-9aa1-451d-be6f-e9d30b1928d9",
+              "name": "Words",
+              "value": "={{ $json.Words || 1500 }}",
+              "type": "string"
+            },
+            {
+              "id": "97a3ed31-5a02-4e9c-bd37-9abb3d68100b",
+              "name": "Sections",
+              "value": "={{ $json.Sections || 5 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1000,
+        160
+      ],
+      "id": "4b073d21-5c9c-415c-bbfa-2803d6cd1837",
+      "name": "Setting"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "n8n Form Trigger": {
+      "main": [
+        [
+          {
+            "node": "Setting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Perplexity API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity API": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Project Manager-工作拆解",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delegate to Research Assistants": {
+      "main": [
+        [
+          {
+            "node": "合併章節標題與內文",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Senior Researcher-深入研究",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity_Search": {
+      "ai_tool": [
+        [
+          {
+            "node": "Research Manager-制定架構",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model 2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Senior Researcher-深入研究",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity_Search 2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Project Manager-工作拆解",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity_Search 3": {
+      "ai_tool": [
+        [
+          {
+            "node": "Senior Researcher-深入研究",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Senior Editor-整理報告": {
+      "main": [
+        [
+          {
+            "node": "標題與圖片建立",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research Manager-制定架構": {
+      "main": [
+        [
+          {
+            "node": "Project Manager-工作拆解",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Project Manager-工作拆解": {
+      "main": [
+        [
+          {
+            "node": "Delegate to Research Assistants",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Senior Researcher-深入研究": {
+      "main": [
+        [
+          {
+            "node": "合併章節標題與內文",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Google Docs1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "文章排版": {
+      "main": [
+        [
+          {
+            "node": "Senior Editor-整理報告",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "標題與圖片建立",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "合併章節標題與內文": {
+      "main": [
+        [
+          {
+            "node": "文章排版",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "標題與圖片建立": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Airtable1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "o3-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Research Manager-制定架構",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "o3-mini1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Project Manager-工作拆解",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Senior Editor-整理報告",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "標題與圖片建立",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Setting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setting": {
+      "main": [
+        [
+          {
+            "node": "Research Manager-制定架構",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3a0aaf02-1d00-4829-982f-d74bfe0a1f44",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f1ebecbf08b94e56cb5800d7576e7d23fd19de8f753a7d14f117872b859ca2d0"
+  },
+  "id": "BpVNvlwFg51CHWb2",
+  "tags": [
+    {
+      "createdAt": "2025-03-14T05:22:18.050Z",
+      "updatedAt": "2025-03-14T05:22:18.050Z",
+      "id": "PJmelrzuIfcnvASt",
+      "name": "Deep Research"
+    }
+  ]
+}

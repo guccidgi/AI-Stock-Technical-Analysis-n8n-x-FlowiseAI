@@ -1,0 +1,8 @@
+{
+  "name": "fetch_option_data",
+  "description": "use this to get Option data",
+  "color": "linear-gradient(rgb(193,231,156), rgb(66,0,122))",
+  "iconSrc": "",
+  "schema": "[{\"id\":0,\"property\":\"ticker\",\"description\":\"ticker of stock\",\"type\":\"string\",\"required\":true}]",
+  "func": "const fetch = require('node-fetch');\nconst url = 'change to url Option dada API' + $ticker ;\nconst options = {\n    method: 'GET',\n    headers: {\n        'Content-Type': 'application/json'\n    }\n};\ntry {\n    const response = await fetch(url, options);\n    const data = await response.text();\n    return data;\n} catch (error) {\n    console.error(error);\n    return '';\n}"
+}

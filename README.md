@@ -1,0 +1,2 @@
+# AI-Stock-Technical-Analysis-n8n-x-FlowiseAI
+ A Telegram AI Agent assistant is used to trigger n8n workflows, which work in conjunction with FlowiseAI to produce professional-grade technical analysis reports. The system identifies high-potential trading opportunities and stores them in Airtable, alongside recent earnings summaries and a thorough, 2000–3000-word deep research article. Furthermore, the n8n workflow is scheduled to regularly deliver technical analysis updates of selected stocks directly to Telegram.

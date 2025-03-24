@@ -1,0 +1,194 @@
+{
+  "name": "Schedule_Watch_Ticker",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -420,
+        -40
+      ],
+      "id": "80c35faa-04bb-49e1-a086-55c423b41031",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "apppiTSWzJFZxliMi",
+          "mode": "list",
+          "cachedResultName": "Stock Watch",
+          "cachedResultUrl": "https://airtable.com/apppiTSWzJFZxliMi"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl4mzIn5bqAKPc7S",
+          "mode": "list",
+          "cachedResultName": "Symbol",
+          "cachedResultUrl": "https://airtable.com/apppiTSWzJFZxliMi/tbl4mzIn5bqAKPc7S"
+        },
+        "filterByFormula": "({Active} = true())",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -220,
+        -40
+      ],
+      "id": "3acaa6d7-cf91-4829-8cc6-a3d6b30da048",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "oBSDcdxlAnZAEc4h",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        220,
+        -40
+      ],
+      "id": "9daf0845-baaa-435f-bb00-e2a986446ee7",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "your n8n webhook for Stock Technical Analysis",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "ticker",
+              "value": "={{ $json.Ticker }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 2000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        -80
+      ],
+      "id": "ea09a1ea-d5c2-4d75-b196-b14e75de5664",
+      "name": "Stock Technical Analysis",
+      "retryOnFail": false,
+      "executeOnce": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 將資料按 Ticker 分組，並保留最新的記錄\nconst groupedByTicker = {};\n\n// 遍歷所有項目\nitems.forEach(item => {\n  const ticker = item.json.Ticker;\n  const createdDate = new Date(item.json.Created.replace('年', '/').replace('月', '/').replace('日', '') + ' ' + item.json.time);\n  \n  // 如果這個 Ticker 尚未存在或日期比現有的更新\n  if (!groupedByTicker[ticker] || createdDate > groupedByTicker[ticker].createdDate) {\n    groupedByTicker[ticker] = {\n      item: item,\n      createdDate: createdDate\n    };\n  }\n});\n\n// 提取結果\nconst result = Object.values(groupedByTicker).map(entry => entry.item);\n\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        -40
+      ],
+      "id": "1a2e7162-2110-4d2b-a3a9-cbbd0d7d2b5d",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0a99e0b1-9859-49d0-a860-5a7b71b7d219",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f1ebecbf08b94e56cb5800d7576e7d23fd19de8f753a7d14f117872b859ca2d0"
+  },
+  "id": "5onKFhdkttJr1KkA",
+  "tags": []
+}

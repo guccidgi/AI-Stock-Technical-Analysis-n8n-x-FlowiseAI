@@ -1,0 +1,766 @@
+{
+  "name": "Personal AI Assistant with Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "gucci@guccidgi.com",
+          "mode": "list",
+          "cachedResultName": "gucci@guccidgi.com"
+        },
+        "limit": 10,
+        "options": {
+          "timeMin": "={{$fromAI(\"date\",\"the date after which to fetch the messages in format YYYY-MM-DDTHH:MM:SS\")}}",
+          "fields": "items(summary, start(dateTime), hangoutLink)"
+        }
+      },
+      "id": "c70236ea-91ab-4e47-b6f6-63a70ede5d3c",
+      "name": "Google Calendar",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "position": [
+        1980,
+        620
+      ],
+      "typeVersion": 1.1,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ziqqnZ8kLzn4mZIt",
+          "name": "Google Calendar Guccidgi"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 6,
+        "filters": {
+          "labelIds": [
+            "INBOX",
+            "UNREAD"
+          ],
+          "readStatus": "unread",
+          "receivedAfter": "={{$fromAI(\"date\",\"the date after which to fetch the messages in format YYYY-MM-DDTHH:MM:SS\")}}"
+        }
+      },
+      "id": "fa955731-86f6-4e4d-8604-dab5f52dee87",
+      "name": "Get Email",
+      "type": "n8n-nodes-base.gmailTool",
+      "position": [
+        1880,
+        620
+      ],
+      "typeVersion": 2.1,
+      "webhookId": "2977dc81-4799-4510-b1c0-12bc2213ddf1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "3dhYHBa3NghWxWgJ",
+          "name": "Gmail Guccidgi"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Listen For Telegram Request').first().json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "e35c04ff-a050-4564-8c1b-5b22b556872f",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        2240,
+        360
+      ],
+      "typeVersion": 1.1,
+      "webhookId": "47511424-b453-4d72-823c-42f64db12abf",
+      "credentials": {
+        "telegramApi": {
+          "id": "szCEEOdTecGbmXQX",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "a0bf9719-4272-46f6-ab3b-eda6f7b44fd8",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": ""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e791d4f8-2c19-4c14-a71e-39a04f22e944",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1200,
+        380
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "text",
+              "stringValue": "={{ $json?.message?.text || \"\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b67a2a93-517b-469e-aaa4-32c422710743",
+      "name": "Voice or Text",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1040,
+        380
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Listen For Telegram Request').item.json.message.voice.file_id }}"
+      },
+      "id": "8105c39f-9e87-44c4-9215-b3777f0b4164",
+      "name": "Get Voice File",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1380,
+        380
+      ],
+      "typeVersion": 1.1,
+      "webhookId": "99ff13e7-11c5-4397-9fd5-fb56f1f1b602",
+      "credentials": {
+        "telegramApi": {
+          "id": "szCEEOdTecGbmXQX",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Process Request from Telegram\n",
+        "height": 278.75,
+        "width": 640.3535436772679,
+        "color": 6
+      },
+      "id": "5537c777-f003-4673-b48a-4993a0c10520",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1020,
+        300
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "gucci@guccidgi.com",
+          "mode": "list",
+          "cachedResultName": "gucci@guccidgi.com"
+        },
+        "start": "={{$fromAI(\"Start_Date\",\"Meeting Start Date\")}}",
+        "end": "={{$fromAI(\"End_Date\",\"Meeting End Date\")}}",
+        "additionalFields": {
+          "summary": "={{$fromAI(\"Meeting_Name\",\"Meeting Start Date\")}}"
+        }
+      },
+      "id": "ed43cf7c-53d8-4d1a-a6f7-351fbaeeb06d",
+      "name": "Create Calendar",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.1,
+      "position": [
+        2080,
+        620
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ziqqnZ8kLzn4mZIt",
+          "name": "Google Calendar Guccidgi"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "c47cacb7-b437-482c-8190-0662f7af1913",
+          "mode": "list",
+          "cachedResultName": "All Tasks [UBCC]",
+          "cachedResultUrl": "https://www.notion.so/c47cacb7b437482c81900662f7af1913"
+        },
+        "title": "={{$fromAI(\"Meeting_Name\",\"Task Name\")}}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Done|checkbox"
+            },
+            {
+              "key": "Priority|status",
+              "statusValue": "=🚨HIGH"
+            },
+            {
+              "key": "Due|date",
+              "range": true,
+              "dateStart": "={{$fromAI(\"Start_Date\",\"Meeting Start Date\")}}",
+              "dateEnd": "={{$fromAI(\"End_Date\",\"Meeting End Date\")}}",
+              "timezone": "Asia/Taipei"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1243651b-2631-4a39-953f-9bf3b5a7c61b",
+      "name": "Create Notion",
+      "type": "n8n-nodes-base.notionTool",
+      "typeVersion": 2.2,
+      "position": [
+        2320,
+        620
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "gJgY0rYNzbC7WCkX",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "64fe44db-af19-43eb-9ff1-de0a72a9e645",
+      "name": "Listen For Telegram Request",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "position": [
+        840,
+        380
+      ],
+      "webhookId": "322dce18-f93e-4f86-b9b1-3305519b7834",
+      "typeVersion": 1,
+      "credentials": {
+        "telegramApi": {
+          "id": "szCEEOdTecGbmXQX",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "c47cacb7-b437-482c-8190-0662f7af1913",
+          "mode": "list",
+          "cachedResultName": "All Tasks [UBCC]",
+          "cachedResultUrl": "https://www.notion.so/c47cacb7b437482c81900662f7af1913"
+        },
+        "limit": 10,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Done|checkbox",
+              "condition": "equals"
+            },
+            {
+              "key": "Due|date",
+              "condition": "on_or_before",
+              "date": "={{ new Date(new Date().setDate(new Date().getDate() + 14)).toISOString().split('T')[0] }}"
+            }
+          ]
+        },
+        "options": {
+          "sort": {
+            "sortValue": [
+              {
+                "key": "Due|date",
+                "direction": "ascending"
+              }
+            ]
+          }
+        }
+      },
+      "id": "fb595394-ace2-47f7-bc51-8eeef262acdd",
+      "name": "Notion Task",
+      "type": "n8n-nodes-base.notionTool",
+      "typeVersion": 2.2,
+      "position": [
+        2200,
+        620
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "your notion api key",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "5bd1788a-3d08-4eb3-8e03-3ce82f44d2a7",
+      "name": "Speech to Text",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        1540,
+        380
+      ],
+      "typeVersion": 1.3,
+      "credentials": {
+        "openAiApi": {
+          "id": "2Lh3Ct62UhbXC7jq",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Smart AI Agent ",
+        "height": 504,
+        "width": 1104,
+        "color": 4
+      },
+      "id": "6cce57f2-2a60-47ce-bc97-6116c071effe",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "=You are a helpful assistant.\n\nToday's date is {{ new Date(new Date().setDate(new Date().getDate() - 0)).toISOString().split('T')[0] }}.\n\nGuidelines:\n- 讀取信件時，過濾掉廣告信。如果發現沒有新的信件則回覆\"目前沒有新的信件\"。\n- 彙整信件時, 需包含寄件者,寄信日期,信件旨以及簡短的內容摘要.\n- 當用戶沒有提及特定日其實，則假設要求詢問的是今天。\n\n- 在回答有關行事曆事件的問題時，過濾掉不相關的事件。例如，如果問題是關於今天的事件/活動/會議/行程時，只需回覆今天的事件。如果事件是在一週後以上，則不要提及。\n當我詢問\"這週之前\"有什麼事件/活動/會議/行程時，指的是事件日期介於當前日期到星期六之間。\n當我說\"星期幾之前\"有什麼事件/活動/會議/行程時，要包含當天。例如星期六之前包含星期六。\n當我說\"某日期之前\"有什麼事件/活動/會議/行程時，要包含當天。例如11/1之前也包含11/1。\n- 當用戶要求建立事件/會議/行程/活動時，\n首先你必須先根據用戶要求分析出以下欄位：\n* Meeting_Name：例如 Meeting with Lala。\n* Start_Date：例如10/30/2024 10:00AM。\n* End_Date：例如10/30/2024 11:00AM。\n使用 {{$now}} 作為目前日期，假如用戶沒有指定會議長度或是結束時間，則預設會議時間為30分鐘。接著再使用 Create Calendar Tool 來建立事件。\n建立事件完成後，再使用 Create Notion 來建立一筆 Notion Database Task。\n\n- 使用 Notion Task tool 來回答關於\"任務/工作/Task\"相關的問題。\n此外，當你用 Notion Tool 取得任務清單後，務必過濾出我要的任務，你要與 property_due 這個欄位比較到期日後，再回覆我符合條件的任務。\n例如：Notion回覆你有二筆任務的到期日分別是11/3/2024與11/8/2024，但是假如我問你在11/4之前有哪些任務要到期(或我需要在11/4之前完成的任務)，你只要回覆我到期日是11/3/2024這個Task。因為11/3/2024的到期日在11/4/2024之前。\n如果我問你今天之前要完成的任務有哪些，意思指的是任務到期日是今天之前。\n如果我問你這週之前要完成的任務有哪些，意思指的是任務到期日是目前 Calendar week最後一天之前，通常我指的是週六之前。Calendar week的定義：\"一週的第一天是星期日；最後一天是星期六。\"\n\n- 使用 Notion Jornal tool 來回答關於\"彙整近期日記\"相關的問題。\n輸出格式：\n### 重要達成工作\n* 10/21 Flowise + Document Store 影片  \n* 10/18 成交兩筆Skool社群年度方案\n### 好的事情\n* 成交兩筆年度方案，讚！ \n### 壞的事情\n* 樓下裝潢施工很吵\n### 學到什麼\n* Document store 如何透過 API 來更新 vector store\n### 感謝人事物\n* 感謝付款年度方案的member\n* 感謝老婆週日帶女兒去兒童樂園\n\n- 使用 Stock_Finance 來回答美股資訊、美股選擇權、公司財報&新聞、技術分析...等相關問題。使用這個工具時，不要作任何修改，保留原有Tool的回覆結果。\n如有圖片連結也務必輸出。\n\n#其他要求\n- 使用台灣人慣用的繁體中文與口吻回覆我\n"
+        }
+      },
+      "id": "759b975f-d17c-4386-a5b3-12413f0361f4",
+      "name": "Smart AI Assistant 👩‍⚕️",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1860,
+        360
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "name": "Earning_Report",
+        "description": "Call this tool to get summary of earning report, technical analysis report, stock information, company news and outlook,...etc.",
+        "workflowId": {
+          "__rl": true,
+          "value": "tWb5RcM2C5VUMqH2",
+          "mode": "list",
+          "cachedResultName": "Flowise-Earnings"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "query",
+              "stringValue": "={{ $json.text }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        2440,
+        620
+      ],
+      "id": "406ecb59-8611-41d3-9ea3-028f0d84f705",
+      "name": "Stock_Finance"
+    },
+    {
+      "parameters": {
+        "name": "Stock_Technical_Analysis",
+        "description": "Call this tool to get stock Technical Analysis and chart image url",
+        "workflowId": {
+          "__rl": true,
+          "value": "8VtuzaqgejzHOWly",
+          "mode": "list",
+          "cachedResultName": "Stock Techical Analysis"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        2580,
+        620
+      ],
+      "id": "1a113f33-3686-48c0-9779-3846ac16a706",
+      "name": "Stock_Technical_Analysis",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use this tool when user ask to save it for future analysis",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "apppiTSWzJFZxliMi",
+          "mode": "list",
+          "cachedResultName": "Stock Watch",
+          "cachedResultUrl": "https://airtable.com/apppiTSWzJFZxliMi"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl4mzIn5bqAKPc7S",
+          "mode": "list",
+          "cachedResultName": "Symbol",
+          "cachedResultUrl": "https://airtable.com/apppiTSWzJFZxliMi/tbl4mzIn5bqAKPc7S"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ticker": "={{ $fromAI(\"ticker\") }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Ticker",
+              "displayName": "Ticker",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Updaed",
+              "displayName": "Updaed",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        2700,
+        620
+      ],
+      "id": "38f9afe8-2bb8-4cdc-aeb9-41d9329858c9",
+      "name": "Airtable1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "oBSDcdxlAnZAEc4h",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-3-7-sonnet-20250219",
+          "mode": "list",
+          "cachedResultName": "Claude 3.7 Sonnet"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        1700,
+        620
+      ],
+      "id": "bf9a3dc4-ea1a-4d2e-befb-4a529d374665",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "bbfyEJjqPPl7ZxFd",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Listen For Telegram Request').first().json.message.from.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1800,
+        560
+      ],
+      "id": "9230f1cf-f750-42e1-ab27-28c7fedc1259",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get Voice File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Email": {
+      "ai_tool": [
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice or Text": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Voice File": {
+      "main": [
+        [
+          {
+            "node": "Speech to Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Notion": {
+      "ai_tool": [
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listen For Telegram Request": {
+      "main": [
+        [
+          {
+            "node": "Voice or Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion Task": {
+      "ai_tool": [
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Speech to Text": {
+      "main": [
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Smart AI Assistant 👩‍⚕️": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stock_Finance": {
+      "ai_tool": [
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stock_Technical_Analysis": {
+      "ai_tool": [
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Smart AI Assistant 👩‍⚕️",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "versionId": "f1838dee-1294-4109-996b-45049a5a24fd",
+  "meta": {
+    "templateId": "2462",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f1ebecbf08b94e56cb5800d7576e7d23fd19de8f753a7d14f117872b859ca2d0"
+  },
+  "id": "CQAAyG0cSGIO7cKe",
+  "tags": [
+    {
+      "createdAt": "2024-10-29T02:11:00.665Z",
+      "updatedAt": "2024-10-29T02:11:00.665Z",
+      "id": "Loz7R1JJg6ePjOdT",
+      "name": "Assistant"
+    }
+  ]
+}

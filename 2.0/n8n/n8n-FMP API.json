@@ -1,0 +1,152 @@
+{
+  "name": "FMP API",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e27b7566-8f75-4ab4-9048-66f2015a17fa",
+              "name": "API_KEY",
+              "value": "change to your API key",
+              "type": "string"
+            },
+            {
+              "id": "7c565a38-ae0b-4f1f-8314-4b23ee534bc1",
+              "name": "symbol",
+              "value": "={{ $json.symbol }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "384984d4-c909-4b25-9f60-c77ff4ecb98f",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        580,
+        620
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "d3d3bf7a-cd42-467b-90c2-d8fb12f74aea",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        400,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://financialmodelingprep.com/api/v3/ratios-ttm/{{ $json.symbol }}?apikey={{ $json.API_KEY }}",
+        "options": {}
+      },
+      "id": "a6e3abea-ce14-4897-8000-8bb0cce6cb89",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "34e54cb8-afe9-466b-b4da-a33edb0df980",
+              "name": "response",
+              "value": "={{ $json.toJsonString() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0fbb2cd6-5fc2-447e-afa1-34e93af9610d",
+      "name": "Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        940,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 調用外部API-查詢最新財務數據 (TTM 過去12個月)\n",
+        "height": 234.5409364543449,
+        "width": 787.9215267895761,
+        "color": 6
+      },
+      "id": "aff13d13-5b90-45c7-b3b0-f66566221f3c",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        340,
+        560
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8c06fc80-233b-4575-a70a-a0151377f2e8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f1ebecbf08b94e56cb5800d7576e7d23fd19de8f753a7d14f117872b859ca2d0"
+  },
+  "id": "nh8PLSbL1yTJkpLJ",
+  "tags": [
+    {
+      "createdAt": "2024-10-08T06:07:46.450Z",
+      "updatedAt": "2024-10-08T06:07:46.450Z",
+      "id": "GlSm404dH7IIusEV",
+      "name": "Stock"
+    }
+  ]
+}
