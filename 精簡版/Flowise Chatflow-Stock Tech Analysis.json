@@ -244,7 +244,7 @@
         "selected": false
       },
       "width": 300,
-      "height": 667,
+      "height": 670,
       "selected": false,
       "positionAbsolute": {
         "x": 89.36111731562664,
@@ -355,7 +355,7 @@
         "selected": false
       },
       "width": 300,
-      "height": 480,
+      "height": 483,
       "selected": false,
       "positionAbsolute": {
         "x": 546.3036938212462,
@@ -439,7 +439,7 @@
         ],
         "inputs": {
           "workerName": "n8n Technical Analyst",
-          "workerPrompt": "You are a senior assistant.\n\n#Mission\nsend stock ticker to the tool named Get_technical_analysis to get stock technincal analysis result and display the return chart image.\n\n#其他要求\n使用通順的繁體中文回覆我",
+          "workerPrompt": "You are a senior assistant.\n\n#Mission\nsend stock ticker to the tool named Get_technical_analysis to get stock technincal analysis result and display the return chart image.\n\n圖片直接顯示在 chat window中，不要只是附上連結。\n\n#其他要求\n使用通順的繁體中文回覆我",
           "tools": [
             "{{customTool_0.data.instance}}"
           ],
@@ -453,7 +453,7 @@
         "selected": false
       },
       "width": 300,
-      "height": 720,
+      "height": 723,
       "selected": false,
       "positionAbsolute": {
         "x": 998.2162408339507,
@@ -529,7 +529,7 @@
         ],
         "inputAnchors": [],
         "inputs": {
-          "selectedTool": "6558e5a2-e481-4c65-a437-4b7fbaae2f6b",
+          "selectedTool": "9046aa94-7a6d-49bf-ae46-fb5964da9ff8",
           "returnDirect": "",
           "customToolName": "",
           "customToolDesc": "",
@@ -549,7 +549,7 @@
         "selected": false
       },
       "width": 300,
-      "height": 370,
+      "height": 373,
       "selected": false,
       "positionAbsolute": {
         "x": 497.5972948524527,
@@ -560,8 +560,8 @@
     {
       "id": "customFunction_0",
       "position": {
-        "x": -250.2318795413112,
-        "y": -157.55481399806482
+        "x": -367.5708201688409,
+        "y": -173.5884089623911
       },
       "type": "customNode",
       "data": {
@@ -620,7 +620,7 @@
           "functionInputVariables": "{\"tocker\":\"{{question}}\"}",
           "functionName": "",
           "tools": "",
-          "javascriptFunction": "const fetch = require('node-fetch');\nconst url = 'https://your n8n webhook url';\nconst options = {\n    method: 'POST',\n    headers: {\n        'Content-Type': 'application/json'\n    },\n    body: JSON.stringify({\n      \"ticker\": 'NVDA;'\n    })\n};\ntry {\n    const response = await fetch(url, options);\n    const text = await response.text(); \n    return text;\n} catch (error) {\n    console.error(error);\n    return '';\n}"
+          "javascriptFunction": "const fetch = require('node-fetch');\nconst url = 'https://n8n.guccidgi.com/webhook/f7887726-37f8-465d-add5-d20d8f3dc5d4';\nconst options = {\n    method: 'POST',\n    headers: {\n        'Content-Type': 'application/json'\n    },\n    body: JSON.stringify({\n      \"ticker\": 'NVDA'\n    })\n};\ntry {\n    const response = await fetch(url, options);\n    const text = await response.text(); \n    return text;\n} catch (error) {\n    console.error(error);\n    return '';\n}"
         },
         "outputAnchors": [
           {
@@ -653,11 +653,11 @@
         "selected": false
       },
       "width": 300,
-      "height": 723,
+      "height": 726,
       "selected": false,
       "positionAbsolute": {
-        "x": -250.2318795413112,
-        "y": -157.55481399806482
+        "x": -367.5708201688409,
+        "y": -173.5884089623911
       },
       "dragging": false
     }
